@@ -33,6 +33,13 @@ nunca precisam ser lidas direto do browser. RLS ligada, sem nenhuma policy para
 `anon`/`authenticated` → acesso negado por padrão. Toda leitura/escrita passa
 pelas rotas de API (`/api/...`) usando a service role key no servidor.
 
+**Pegadinha descoberta na Fase 2:** um `select("*, order:orders(...)")` feito
+com a anon key, mesmo filtrando um `cards` que a policy libera, sempre volta
+`order: null` — a RLS de `orders` barra o *embed*, não só a leitura direta da
+tabela. `app/[slug]/page.tsx` contorna isso buscando `plan` numa segunda
+consulta com a service role, só depois de confirmar (com a anon key de
+verdade) que o card em questão é público.
+
 ## Autorização de escrita: na aplicação, não em RLS por dono
 
 O login da área do cliente é por **código de verificação**, não Supabase Auth
