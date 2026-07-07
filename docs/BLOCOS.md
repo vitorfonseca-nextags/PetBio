@@ -29,16 +29,13 @@ medicações. Ver `components/card/BlocoSaude.tsx` (prop `essencial`).
 
 ## Plano ainda não definido (`plan = null`)
 
-**Atualização da Fase 3:** o quiz real sempre pergunta o plano no primeiro
-passo e já grava em `orders.plan` desde o `status=draft` (motivo em
-`docs/QUIZ.md`) — então, na prática, `plan = null` só acontece nos cards-
-semente da Fase 2 que simulam esse estado de propósito. A lógica abaixo
-continua valendo como comportamento definido do sistema, só raramente exercida
-com dados reais.
+**Este é o estado normal de toda prévia.** O quiz (Fase 3) não pergunta plano
+— coleta tudo como se fosse o Completo — e `orders.plan` só é definido na
+compra pelo webhook da Yampi (Fase 6, regra do CLAUDE.md §5). Motivo completo
+em `docs/QUIZ.md`.
 
-Antes da compra, `orders.plan` podia ficar `null` (o plano só é escolhido no
-checkout da Yampi — regra do CLAUDE.md §5). Nesse estado, que só existe durante a **prévia**
-(`is_watermarked = true`), a renderização **não corta nada**: mostra todos os
+Enquanto `plan = null` (ou seja, durante toda a **prévia**,
+`is_watermarked = true`), a renderização **não corta nada**: mostra todos os
 blocos e fotos preenchidos no quiz, como um "gostinho" do produto completo.
 O corte por plano só entra em vigor depois do pagamento, quando o webhook
 grava `plan = 'simples' | 'completo'` (Fase 6).

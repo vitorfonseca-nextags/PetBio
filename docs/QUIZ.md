@@ -1,24 +1,29 @@
 # QUIZ.md — Decisões da Fase 3
 
-## Por que o quiz pergunta o plano, se "o plano é definido no checkout da Yampi"
+## O quiz não pergunta plano
 
-O CLAUDE.md (§5) diz que o plano é definido no checkout e confirmado pelo
-webhook — e isso continua verdade: `orders.plan` só é **garantido/definitivo**
-depois do pagamento (Fase 6). Mas o PLANO.md pede explicitamente, na própria
-Fase 3 (item 3.2), que o quiz já não peça os blocos do Completo pra quem
-está no Simples — ou seja, o quiz precisa saber o plano *antes* de perguntar
-os blocos.
+Correção de rumo (2026-07-07, a pedido do operador): o quiz **não** pergunta
+Simples ou Completo. Ele coleta **todas** as informações do pet — todos os
+blocos, sem cortes — como se a pessoa tivesse escolhido o Completo. A escolha
+do plano acontece só na hora da compra (checkout da Yampi, Fase 4/6); o
+webhook da Fase 6 grava `orders.plan` a partir do que foi realmente pago.
 
-Solução: o quiz pergunta o plano como primeiro passo (só pra decidir quais
-perguntas fazer e qual limite de fotos vale) e grava essa escolha em
-`orders.plan` já no `status=draft`. Nada impede isso — o `CHECK` da coluna só
-valida o valor, não exige `status=paid`. Se o cliente mudar de ideia e comprar
-um plano diferente na Yampi, o webhook da Fase 6 sobrescreve `plan` com o que
-foi realmente pago — a compra manda, a escolha do quiz é só um ponto de
-partida. Consequência prática: diferente do card-semente da Fase 2 (que tinha
-`plan = null` pra simular "ainda não decidiu"), toda prévia criada pelo quiz
-real já nasce com um plano definido, então o corte de blocos por plano
-(`docs/BLOCOS.md`) já vale desde a prévia, não só depois de pago.
+Até a compra, `orders.plan` fica `null`. A prévia (`/{order_code}`,
+`is_watermarked=true`) mostra o card **completo** — todos os blocos, todas as
+fotos enviadas — porque a lógica de renderização da Fase 2
+(`mostraPersonalidadeEHistorico`, `limiteFotos` em `lib/plano.ts`) já trata
+`plan = null` como "não corta nada" desde o início. Esse não é mais um caso
+raro simulado só no seed da Fase 2 — é o estado normal de **toda** prévia
+criada pelo quiz real.
+
+Depois da compra, se a pessoa levou o Simples, o card passa a ser renderizado
+com os cortes do Simples — mas os dados de Personalidade/Histórico e as fotos
+extras continuam salvos no banco (só não aparecem). Se um dia ela migrar pro
+Completo, a informação já está lá.
+
+**Nota:** isso corrige o item 3.2 do `docs/PLANO.md`, que dizia "plano Simples
+não pede blocos do Completo" — texto do plano original que não refletia a
+intenção real do produto. Ajustado nesta sessão.
 
 ## Geração de fotos: upload passa pelo servidor, não pelo browser
 
@@ -29,7 +34,8 @@ quiz manda os arquivos como `FormData` pro server action `criarPedido`
 zero policy pública de escrita no Storage — a superfície de ataque continua
 do tamanho que era na Fase 1. Custo: os arquivos passam pelo servidor da
 Vercel antes de chegar no Storage, o que é irrelevante no volume esperado
-(fotos de pet, poucas por pedido).
+(fotos de pet, poucas por pedido). Limite de fotos no quiz: o mesmo do
+Completo (15) — é o teto de qualquer forma, já que o quiz coleta tudo.
 
 ## `order_code`: gerado no servidor, com retry em colisão
 
@@ -41,15 +47,11 @@ com 8 caracteres é desprezível, o retry é só uma rede de segurança.
 
 ## Lógica condicional implementada
 
-- **Plano Simples não pergunta** Personalidade/Rotina nem Histórico (passos
-  nem aparecem no wizard) e, dentro de Saúde, não pergunta Clínica de
-  emergência nem a lista de medicações (fica igual à visualização "essencial"
-  da Fase 2).
 - **"Toma medicação?"** é um checkbox; a lista de medicações só aparece (e só
   é gravada) se marcado "sim" — se não, `medicacoes` vai vazio.
-- **Limite de fotos** do plano é aplicado já no seletor de arquivos (não deixa
-  escolher mais que o limite) e de novo no servidor (`slice`), como
-  segunda barreira caso alguém contorne o client.
+- Não há mais corte de passos por plano — todo mundo passa por
+  Identidade → Alimentação → Saúde → Personalidade/Rotina → Histórico →
+  Contato.
 
 ## "Gerar exemplo"
 
@@ -59,9 +61,7 @@ do README).
 
 ## Testado
 
-Rodei o quiz duas vezes de ponta a ponta com Chromium headless (Playwright):
-uma vez plano completo (com fotos, medicação e evento de histórico) e uma vez
-plano simples (confirmando que os passos extras nem aparecem e que o seletor
-de fotos trava em 3). Os dois criaram o pedido e o card no Supabase
-corretamente e redirecionaram pra prévia com os dados certos; removi os dois
-registros de teste depois de conferir.
+Rodei o quiz de ponta a ponta com Chromium headless (Playwright), com fotos,
+medicação e evento de histórico, confirmando gravação correta no Supabase
+(order com `plan=null`, card com todos os blocos preenchidos) e render
+correto da prévia completa. Registro de teste removido depois de conferir.

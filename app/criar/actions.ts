@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { gerarOrderCode } from "@/lib/order-code";
 import { limiteFotos } from "@/lib/plano";
-import type { Plano } from "@/lib/types/card";
 
 async function uploadFoto(orderCode: string, file: File, indice: number): Promise<string> {
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -17,17 +16,16 @@ async function uploadFoto(orderCode: string, file: File, indice: number): Promis
 }
 
 /**
- * Cria o pedido (draft) + card (watermarked) a partir das respostas do quiz e
- * redireciona pra prévia. Nada de IA aqui — só validação e gravação.
+ * Cria o pedido (draft, plan=null) + card (watermarked) a partir das
+ * respostas do quiz e redireciona pra prévia. O quiz não pergunta plano —
+ * coleta tudo, como se fosse o Completo; o plano só é escolhido na compra e
+ * gravado pelo webhook da Yampi (Fase 6). Nada de IA aqui — só validação e
+ * gravação. Ver docs/QUIZ.md.
  */
 export async function criarPedido(formData: FormData) {
-  const plano = formData.get("plano");
   const whatsapp = formData.get("whatsapp");
   const dadosRaw = formData.get("dados");
 
-  if (plano !== "simples" && plano !== "completo") {
-    throw new Error("Selecione um plano antes de continuar.");
-  }
   if (typeof whatsapp !== "string" || whatsapp.trim().length < 8) {
     throw new Error("Informe um WhatsApp válido.");
   }
@@ -57,7 +55,6 @@ export async function criarPedido(formData: FormData) {
       .insert({
         order_code: orderCode,
         status: "draft",
-        plan: plano,
         owner_whatsapp: whatsapp.trim(),
       })
       .select("id")
@@ -72,7 +69,7 @@ export async function criarPedido(formData: FormData) {
   if (!orderId) throw new Error("Não foi possível gerar um código de pedido único. Tente de novo.");
 
   try {
-    const limite = limiteFotos(plano as Plano);
+    const limite = limiteFotos(null); // quiz coleta como se fosse Completo
     const fotoPrincipalFile = formData.get("fotoPrincipal");
     const fotosFiles = formData
       .getAll("fotos")

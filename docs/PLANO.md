@@ -75,11 +75,13 @@ Objetivo: formulário que cria o pedido/card e grava tudo no banco.
 
 - **3.1** Rota `/criar` com o fluxo do quiz em etapas, mapeando 1:1 os campos dos
   blocos. **Sem IA** — só coleta e grava.
-- **3.2** Lógica condicional (ex.: "não toma remédio" → pula medicação; plano
-  Simples não pede blocos do Completo). Botões de **"gerar exemplo"** com textos-
-  modelo pré-escritos (constantes no código, não IA) nos campos de texto livre.
-- **3.3** Upload de fotos para o Supabase Storage (respeitando o limite do plano) e
-  gravação das URLs.
+- **3.2** Lógica condicional (ex.: "não toma remédio" → pula medicação). O quiz
+  **não pergunta o plano** — coleta todos os blocos, como se fosse o Completo; o
+  plano só é escolhido na compra (Fase 4/6). Botões de **"gerar exemplo"** com
+  textos-modelo pré-escritos (constantes no código, não IA) nos campos de texto
+  livre.
+- **3.3** Upload de fotos para o Supabase Storage (limite do Completo, já que o
+  quiz coleta tudo) e gravação das URLs.
 - **3.4** Ao concluir o quiz: criar `orders` (`status=draft`, `order_code` único) e
   `cards` (`is_watermarked=true`, `slug=order_code`); coletar o **WhatsApp** do dono.
 

@@ -6,7 +6,6 @@ import type {
   BlocoPersonalidadeRotina,
   BlocoSaude,
   EventoHistorico,
-  Plano,
 } from "@/lib/types/card";
 import { limiteFotos } from "@/lib/plano";
 import { EXEMPLOS } from "@/lib/quiz/exemplos";
@@ -76,16 +75,13 @@ const PERSONALIDADE_INICIAL: BlocoPersonalidadeRotina = {
   lugares_favoritos: "",
 };
 
-function calcularPassos(plano: Plano | null): string[] {
-  const passos = ["plano", "identidade", "alimentacao", "saude"];
-  if (plano === "completo") passos.push("personalidade", "historico");
-  passos.push("contato");
-  return passos;
-}
+// O quiz não pergunta plano — coleta tudo, como se fosse o Completo. O corte
+// por plano só acontece na renderização, depois da compra (ver docs/QUIZ.md).
+const PASSOS = ["identidade", "alimentacao", "saude", "personalidade", "historico", "contato"];
+const LIMITE_FOTOS_QUIZ = limiteFotos(null);
 
 export default function QuizPage() {
   const [passoIndex, setPassoIndex] = useState(0);
-  const [plano, setPlano] = useState<Plano | null>(null);
   const [identidade, setIdentidade] = useState<IdentidadeForm>(IDENTIDADE_INICIAL);
   const [alimentacao, setAlimentacao] = useState<BlocoAlimentacao>(ALIMENTACAO_INICIAL);
   const [saude, setSaude] = useState<BlocoSaude>(SAUDE_INICIAL);
@@ -96,13 +92,10 @@ export default function QuizPage() {
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, startTransition] = useTransition();
 
-  const passos = calcularPassos(plano);
-  const passoAtual = passos[passoIndex];
+  const passoAtual = PASSOS[passoIndex];
 
   function podeAvancar(): boolean {
     switch (passoAtual) {
-      case "plano":
-        return plano !== null;
       case "identidade":
         return identidade.nome.trim() !== "" && identidade.especie.trim() !== "";
       case "contato":
@@ -118,7 +111,7 @@ export default function QuizPage() {
       setErro("Preencha os campos obrigatórios antes de continuar.");
       return;
     }
-    setPassoIndex((i) => Math.min(i + 1, passos.length - 1));
+    setPassoIndex((i) => Math.min(i + 1, PASSOS.length - 1));
   }
 
   function voltar() {
@@ -127,14 +120,13 @@ export default function QuizPage() {
   }
 
   function enviar() {
-    if (!podeAvancar() || !plano) {
+    if (!podeAvancar()) {
       setErro("Preencha os campos obrigatórios antes de continuar.");
       return;
     }
     setErro(null);
 
     const fd = new FormData();
-    fd.append("plano", plano);
     fd.append("whatsapp", whatsapp.trim());
     fd.append(
       "dados",
@@ -153,8 +145,8 @@ export default function QuizPage() {
         },
         alimentacao,
         saude: { ...saude, medicacoes: tomaMedicacao ? saude.medicacoes : [] },
-        personalidade_rotina: plano === "completo" ? personalidade : {},
-        historico: plano === "completo" ? historico : [],
+        personalidade_rotina: personalidade,
+        historico,
       }),
     );
     if (identidade.fotoPrincipal) fd.append("fotoPrincipal", identidade.fotoPrincipal);
@@ -169,35 +161,10 @@ export default function QuizPage() {
     });
   }
 
-  const limite = plano ? limiteFotos(plano) : 3;
-
   return (
     <main className="mx-auto min-h-screen max-w-md px-4 pb-16">
       <h1 className="pt-6 text-xl font-bold">Criar o PetBio do seu pet</h1>
-      <Progresso atual={passoIndex} total={passos.length} />
-
-      {passoAtual === "plano" && (
-        <div className="space-y-3 py-4">
-          <p className="text-sm text-neutral-600">Escolha o plano pra saber quais perguntas fazer.</p>
-          {(["simples", "completo"] as const).map((opcao) => (
-            <button
-              key={opcao}
-              type="button"
-              onClick={() => setPlano(opcao)}
-              className={`w-full rounded-xl border p-4 text-left ${
-                plano === opcao ? "border-emerald-700 ring-1 ring-emerald-700" : "border-neutral-300"
-              }`}
-            >
-              <p className="font-semibold capitalize">{opcao}</p>
-              <p className="text-sm text-neutral-600">
-                {opcao === "simples"
-                  ? "Identidade + Alimentação + Saúde essencial · até 3 fotos"
-                  : "Tudo do Simples + Personalidade/Rotina + Histórico · até 15 fotos"}
-              </p>
-            </button>
-          ))}
-        </div>
-      )}
+      <Progresso atual={passoIndex} total={PASSOS.length} />
 
       {passoAtual === "identidade" && (
         <div className="space-y-4 py-4">
@@ -288,7 +255,7 @@ export default function QuizPage() {
           />
           <SeletorFotosExtras
             arquivos={identidade.fotos}
-            limite={limite}
+            limite={LIMITE_FOTOS_QUIZ}
             onChange={(fotos) => setIdentidade((s) => ({ ...s, fotos }))}
           />
         </div>
@@ -363,31 +330,27 @@ export default function QuizPage() {
             value={saude.condicoes ?? ""}
             onChange={(v) => setSaude((s) => ({ ...s, condicoes: v }))}
           />
-          {plano === "completo" && (
-            <Campo
-              label="Clínica de emergência"
-              value={saude.clinica_emergencia ?? ""}
-              onChange={(v) => setSaude((s) => ({ ...s, clinica_emergencia: v }))}
-            />
-          )}
-          {plano === "completo" && (
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-neutral-900">
-                <input
-                  type="checkbox"
-                  checked={tomaMedicacao}
-                  onChange={(e) => setTomaMedicacao(e.target.checked)}
-                />
-                Toma alguma medicação regularmente?
-              </label>
-              {tomaMedicacao && (
-                <ListaMedicacoes
-                  medicacoes={saude.medicacoes ?? []}
-                  onChange={(medicacoes) => setSaude((s) => ({ ...s, medicacoes }))}
-                />
-              )}
-            </div>
-          )}
+          <Campo
+            label="Clínica de emergência"
+            value={saude.clinica_emergencia ?? ""}
+            onChange={(v) => setSaude((s) => ({ ...s, clinica_emergencia: v }))}
+          />
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-neutral-900">
+              <input
+                type="checkbox"
+                checked={tomaMedicacao}
+                onChange={(e) => setTomaMedicacao(e.target.checked)}
+              />
+              Toma alguma medicação regularmente?
+            </label>
+            {tomaMedicacao && (
+              <ListaMedicacoes
+                medicacoes={saude.medicacoes ?? []}
+                onChange={(medicacoes) => setSaude((s) => ({ ...s, medicacoes }))}
+              />
+            )}
+          </div>
         </div>
       )}
 
