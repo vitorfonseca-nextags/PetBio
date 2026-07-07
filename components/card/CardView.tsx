@@ -7,6 +7,7 @@ import { BlocoPersonalidadeRotina } from "./BlocoPersonalidadeRotina";
 import { BlocoHistorico } from "./BlocoHistorico";
 import { MarcaDagua } from "./MarcaDagua";
 import { BotaoCompartilhar } from "./BotaoCompartilhar";
+import { BotoesCompra } from "./BotoesCompra";
 
 export function CardView({ card }: { card: CardComPedido }) {
   const plano = card.order.plan;
@@ -22,10 +23,13 @@ export function CardView({ card }: { card: CardComPedido }) {
       </div>
 
       {card.is_watermarked && (
-        <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Esta é uma prévia. Compre para liberar o link compartilhável, o QR Code
-          e a edição.
-        </p>
+        <>
+          <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            Esta é uma prévia. Compre para liberar o link compartilhável, o QR Code
+            e a edição.
+          </p>
+          <BotoesCompra orderCode={card.order.order_code} />
+        </>
       )}
 
       <BlocoIdentidade identidade={card.identidade} limiteFotos={limiteFotos(plano)} />
