@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
-import { assinaturaYampiValida, extrairMetadata, extrairPlano } from "@/lib/yampi-webhook";
+import {
+  assinaturaYampiValida,
+  extrairEmailCliente,
+  extrairMetadata,
+  extrairPlano,
+} from "@/lib/yampi-webhook";
 import { gerarSlugPersonalizado } from "@/lib/slug";
 import { gerarQrCode } from "@/lib/qr";
 
@@ -75,7 +80,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "plano não identificado" }, { status: 500 });
   }
 
-  await supabaseAdmin.from("orders").update({ status: "paid", plan: plano }).eq("id", order.id);
+  // e-mail do cliente vem do checkout da Yampi — usado no login por código
+  // da área do cliente (Fase 7). Ausência não bloqueia o pagamento.
+  const email = extrairEmailCliente(payload.resource);
+
+  await supabaseAdmin
+    .from("orders")
+    .update({ status: "paid", plan: plano, ...(email ? { owner_email: email } : {}) })
+    .eq("id", order.id);
 
   const slug = await gerarSlugPersonalizado(card.identidade);
   const qrUrl = await gerarQrCode(slug);

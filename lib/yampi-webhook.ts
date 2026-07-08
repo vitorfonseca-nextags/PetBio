@@ -55,3 +55,17 @@ export function extrairPlano(resource: unknown): Plano | null {
   }
   return null;
 }
+
+/**
+ * Lê o e-mail do cliente em `resource.customer.data.email` (formato
+ * confirmado chamando a API real de pedidos da Yampi — recurso singular vem
+ * como `{ data: {...} }`, diferente de `metadata`/`items` que vêm como
+ * array). Ausência não é erro: o e-mail só passa a existir depois que o
+ * comprador preenche o checkout; se o formato mudar, login por código
+ * simplesmente não terá e-mail pra casar (ver docs/FASE7.md).
+ */
+export function extrairEmailCliente(resource: unknown): string | null {
+  const email = (resource as { customer?: { data?: { email?: string } } } | undefined)?.customer?.data
+    ?.email;
+  return typeof email === "string" && email.includes("@") ? email : null;
+}

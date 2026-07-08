@@ -4,16 +4,7 @@ import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { gerarOrderCode } from "@/lib/order-code";
 import { limiteFotos } from "@/lib/plano";
-
-async function uploadFoto(orderCode: string, file: File, indice: number): Promise<string> {
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const caminho = `${orderCode}/${indice}-${Date.now()}.${ext}`;
-  const { error } = await supabaseAdmin.storage
-    .from("pet-photos")
-    .upload(caminho, file, { contentType: file.type || undefined, upsert: true });
-  if (error) throw new Error(`Falha no upload da foto: ${error.message}`);
-  return supabaseAdmin.storage.from("pet-photos").getPublicUrl(caminho).data.publicUrl;
-}
+import { uploadFoto } from "@/lib/storage";
 
 /**
  * Cria o pedido (draft, plan=null) + card (watermarked) a partir das
