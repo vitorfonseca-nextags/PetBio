@@ -30,6 +30,37 @@ estão vazios no `.env.local`. Enquanto isso, a prévia mostra um aviso
 falta esse passo. Passo a passo pro operador pegar os links está no resumo da
 fase (README/checkpoint desta sessão).
 
+## Setup automático dos produtos (API de administração)
+
+A Yampi tem uma API REST separada pra gerenciar a loja (catálogo, cupons,
+pedidos) — diferente da URL de checkout. Usada só localmente, via script, nunca
+no app em produção.
+
+- **Base URL:** `https://api.dooki.com.br/v2/{alias}` (Dooki é o backend por
+  trás da Yampi).
+- **Autenticação:** headers `User-Token` e `User-Secret-Key`. Gerados em
+  **Painel Yampi → avatar (canto superior direito) → Credenciais de API**
+  — a mesma tela mostra o **Alias** da loja.
+- **Criar marca:** `POST /catalog/brands`.
+- **Criar produto (com SKU inline, sem chamada separada):** `POST /catalog/products`.
+- **Criar cupom:** `POST /pricing/promocodes`.
+- Fontes: [Yampi Developer Portal — Auth](https://docs.yampi.com.br/api-reference/auth/auth-user-token.md),
+  [Criar produto](https://docs.yampi.com.br/api-reference/catalogo/produtos/criar-produto.md),
+  [Criar cupom](https://docs.yampi.com.br/api-reference/promocoes/cupons/criar-cupom.md).
+
+`scripts/yampi-setup.mjs` (`npm run yampi:setup`) usa essa API pra criar a
+marca "PetBio" e os produtos "PetBio Simples" (R$10) e "PetBio Completo"
+(R$29,90) — de forma idempotente (não duplica se already existir) e sempre
+com `active: false` (rascunho): por segurança, nada fica comprável de verdade
+sem o operador revisar e ativar manualmente no painel.
+
+**Limitação encontrada:** não achei um campo de resposta da API que devolva o
+"link de compra" direto do produto criado — pelos artigos de ajuda da Yampi,
+esse link só aparece no painel (Produtos → produto → aba Resumo → "Link de
+compra", formato `seguro.SEUDOMINIO.com.br/r/AABBJJ`). Por isso o script cria
+os produtos, mas copiar o link final ainda é um passo manual de ~30s por
+produto.
+
 ## Webhook (fica pra Fase 6, só anotando o que já pesquisei)
 
 - Header `X-Yampi-Hmac-SHA256`: HMAC-SHA256 do corpo da requisição usando o
