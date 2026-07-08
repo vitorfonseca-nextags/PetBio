@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroMotion } from "@/components/marketing/HeroMotion";
 
 const PASSOS = [
   {
@@ -51,6 +52,7 @@ export default function HomePage() {
       </header>
 
       <section className="space-y-4 py-6 text-center">
+        <HeroMotion />
         <h1 className="text-3xl font-bold text-balance">
           Todos os dados do seu pet em um só lugar
         </h1>

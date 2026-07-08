@@ -46,3 +46,7 @@ next-env.d.ts
 # claude code (local-only settings)
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# fotos originais enviadas pelo operador pra referência de mockup — as
+# versões usadas de verdade no site já estão em /public/marketing
+/docs/fotos-florentina/
