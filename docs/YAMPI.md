@@ -61,6 +61,21 @@ compra", formato `seguro.SEUDOMINIO.com.br/r/AABBJJ`). Por isso o script cria
 os produtos, mas copiar o link final ainda é um passo manual de ~30s por
 produto.
 
+**Pegadinhas descobertas rodando de verdade (a doc não deixava isso claro):**
+- `/auth/me` é **global** — não leva o alias da loja na URL (diferente de
+  todo o resto da API, que é `/{alias}/...`).
+- `skus[].price_cost` é **obrigatório** nessa loja, mesmo a doc listando como
+  opcional — o script manda `0`.
+- O parâmetro `?search=` nas listagens (`/catalog/brands`, `/catalog/products`)
+  **não filtra nada** — devolve a página inteira ignorando o valor. Pra achar
+  algo existente por nome é preciso paginar (`?page=N`) e comparar no
+  cliente.
+- Catálogos grandes (essa loja tem dezenas de páginas de produtos) fazem essa
+  paginação estourar rate limit (`429 Too Many Attempts`) rápido. Por isso o
+  script só pagina pra achar a **marca** (poucas), e pra **produto** tenta
+  criar direto e trata erro 422 de "nome/slug já em uso" como "já existe,
+  ignora" — mais barato que paginar um catálogo grande.
+
 ## Webhook (fica pra Fase 6, só anotando o que já pesquisei)
 
 - Header `X-Yampi-Hmac-SHA256`: HMAC-SHA256 do corpo da requisição usando o

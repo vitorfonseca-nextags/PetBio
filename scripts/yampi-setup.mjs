@@ -14,36 +14,51 @@ if (!alias || !userToken || !userSecretKey) {
   process.exit(1);
 }
 
-const BASE = `https://api.dooki.com.br/v2/${alias}`;
+const API_ROOT = "https://api.dooki.com.br/v2";
+const BASE = `${API_ROOT}/${alias}`; // recursos da loja (catálogo, cupons...)
 const HEADERS = {
   "Content-Type": "application/json",
   "User-Token": userToken,
   "User-Secret-Key": userSecretKey,
 };
 
-async function yampi(method, path, body) {
-  const res = await fetch(`${BASE}${path}`, {
+async function chamar(url, method, body) {
+  const res = await fetch(url, {
     method,
     headers: HEADERS,
     body: body ? JSON.stringify(body) : undefined,
   });
   const json = await res.json().catch(() => null);
   if (!res.ok) {
-    throw new Error(`${method} ${path} -> ${res.status}: ${JSON.stringify(json)}`);
+    throw new Error(`${method} ${url} -> ${res.status}: ${JSON.stringify(json)}`);
   }
   return json;
 }
 
-// 1. valida credenciais
-const me = await yampi("POST", "/auth/me");
+// recursos da loja usam o alias na URL
+const yampi = (method, path, body) => chamar(`${BASE}${path}`, method, body);
+
+// O parâmetro ?search= da Yampi não filtra de verdade (ignora o valor) — pra
+// achar algo existente por nome é preciso paginar e comparar no cliente.
+async function buscarPorNomeExato(path, nome) {
+  for (let page = 1; page <= 20; page++) {
+    const resposta = await yampi("GET", `${path}?page=${page}`);
+    const achado = resposta?.data?.find((item) => item.name === nome);
+    if (achado) return achado;
+    if (page >= (resposta?.meta?.pagination?.total_pages ?? 1)) break;
+  }
+  return null;
+}
+
+// /auth/me é global — não leva o alias da loja na URL
+const me = await chamar(`${API_ROOT}/auth/me`, "POST");
 console.log("Autenticado como:", me?.data?.name ?? me?.data?.email ?? JSON.stringify(me));
 
 // 2. marca "PetBio" (reaproveita se já existir)
 let brandId;
-const brands = await yampi("GET", "/catalog/brands?search=PetBio");
-const existente = brands?.data?.find((b) => b.name === "PetBio");
-if (existente) {
-  brandId = existente.id;
+const marcaExistente = await buscarPorNomeExato("/catalog/brands", "PetBio");
+if (marcaExistente) {
+  brandId = marcaExistente.id;
   console.log("Marca PetBio já existe, id:", brandId);
 } else {
   const criada = await yampi("POST", "/catalog/brands", {
@@ -72,34 +87,38 @@ const PRODUTOS = [
   },
 ];
 
+// Catálogo dessa loja tem dezenas de páginas de produtos — paginar tudo pra
+// checar duplicata (como fizemos com a marca) estoura rate limit da Yampi
+// (429). Em vez disso: tenta criar e trata "nome/sku já em uso" como sinal
+// de que já existe, sem precisar descobrir o id.
 for (const produto of PRODUTOS) {
-  const jaExiste = await yampi(
-    "GET",
-    `/catalog/products?search=${encodeURIComponent(produto.name)}`,
-  );
-  if (jaExiste?.data?.some((p) => p.name === produto.name)) {
-    console.log(`Produto "${produto.name}" já existe, pulando.`);
-    continue;
+  try {
+    const criado = await yampi("POST", "/catalog/products", {
+      simple: true,
+      brand_id: brandId,
+      active: false,
+      searchable: false,
+      is_digital: true,
+      name: produto.name,
+      description: produto.descricao,
+      skus: [
+        {
+          sku: produto.name.toUpperCase().replace(/\s+/g, "-"),
+          price_sale: produto.preco,
+          price_cost: 0,
+          quantity_managed: false,
+          blocked_sale: false,
+        },
+      ],
+    });
+    console.log(`Produto "${produto.name}" criado, id: ${criado.data.id} (inativo — revise e ative no painel)`);
+  } catch (err) {
+    if (err.message.includes("já está em uso") || err.message.includes("422")) {
+      console.log(`Produto "${produto.name}" provavelmente já existe (${err.message}) — pulando.`);
+    } else {
+      throw err;
+    }
   }
-
-  const criado = await yampi("POST", "/catalog/products", {
-    simple: true,
-    brand_id: brandId,
-    active: false,
-    searchable: false,
-    is_digital: true,
-    name: produto.name,
-    description: produto.descricao,
-    skus: [
-      {
-        sku: produto.name.toUpperCase().replace(/\s+/g, "-"),
-        price_sale: produto.preco,
-        quantity_managed: false,
-        blocked_sale: false,
-      },
-    ],
-  });
-  console.log(`Produto "${produto.name}" criado, id: ${criado.data.id} (inativo — revise e ative no painel)`);
 }
 
 console.log(
