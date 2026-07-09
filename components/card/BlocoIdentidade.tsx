@@ -1,5 +1,5 @@
 import type { BlocoIdentidade as TipoBlocoIdentidade } from "@/lib/types/card";
-import { Galeria } from "./Galeria";
+import { PilhaFotos } from "./PilhaFotos";
 
 const PORTE_LABEL: Record<string, string> = {
   pequeno: "Pequeno porte",
@@ -24,18 +24,16 @@ export function BlocoIdentidade({
   identidade: TipoBlocoIdentidade;
   limiteFotos: number;
 }) {
-  const fotos = identidade.fotos ?? [];
+  // foto_principal + fotos[] numa pilha só (Fase 8.3); mantém a mesma
+  // capacidade total de antes (1 principal + limite da galeria).
+  const todasFotos = identidade.foto_principal
+    ? [identidade.foto_principal, ...(identidade.fotos ?? [])]
+    : identidade.fotos ?? [];
+  const limiteTotal = identidade.foto_principal ? limiteFotos + 1 : limiteFotos;
 
   return (
     <section className="space-y-3 py-4">
-      {identidade.foto_principal && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={identidade.foto_principal.url}
-          alt={identidade.foto_principal.alt ?? identidade.nome}
-          className="aspect-square w-full rounded-xl object-cover"
-        />
-      )}
+      <PilhaFotos fotos={todasFotos} limite={limiteTotal} nomePet={identidade.nome} />
       <div>
         <h1 className="text-2xl font-bold">{identidade.nome}</h1>
         {identidade.apelido && (
@@ -61,7 +59,6 @@ export function BlocoIdentidade({
         <Linha label="Cores" valor={identidade.cores} />
         <Linha label="Marcas distintivas" valor={identidade.marcas_distintivas} />
       </div>
-      <Galeria fotos={fotos} limite={limiteFotos} />
     </section>
   );
 }
