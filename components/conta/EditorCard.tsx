@@ -126,8 +126,8 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
   }
 
   return (
-    <main className="moldura-desktop mx-auto min-h-screen w-full max-w-md bg-cream pb-4">
-      <div className="flex items-center justify-between px-4 py-4">
+    <main className="min-h-screen w-full bg-cream pb-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 lg:px-8">
         <Link href="/conta" className="text-[13px] font-bold text-ink-soft">
           ← Seus cards
         </Link>
@@ -135,87 +135,90 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
           Ver público
         </Link>
       </div>
-      <div className="px-4">
-        <h1 className="text-xl font-extrabold text-ink">Editar {identidade.nome || "seu pet"}</h1>
+      <div className="mx-auto max-w-6xl px-4 lg:px-8">
+        <h1 className="text-xl font-extrabold text-ink lg:text-2xl">Editar {identidade.nome || "seu pet"}</h1>
         <span className="mt-1.5 inline-block rounded-full bg-sage-tint px-2.5 py-1 text-[10px] font-extrabold text-sage">
           Plano {plano === "completo" ? "Completo" : "Simples"}
         </span>
       </div>
 
-      <div className="px-4">
-        <BlocoExpansivel titulo="Identidade" icone="🐾" defaultAberto>
-          <div className="space-y-4">
-            <Campo
-              label="Nome do pet"
-              required
-              value={identidade.nome}
-              onChange={(v) => setIdentidade((s) => ({ ...s, nome: v }))}
-            />
-            <Campo
-              label="Apelido"
-              value={identidade.apelido}
-              onChange={(v) => setIdentidade((s) => ({ ...s, apelido: v }))}
-            />
-            <Campo
-              label="Espécie"
-              required
-              value={identidade.especie}
-              onChange={(v) => setIdentidade((s) => ({ ...s, especie: v }))}
-            />
-            <Campo
-              label="Raça"
-              value={identidade.raca}
-              onChange={(v) => setIdentidade((s) => ({ ...s, raca: v }))}
-            />
-            <Select
-              label="Sexo"
-              value={identidade.sexo}
-              onChange={(v) => setIdentidade((s) => ({ ...s, sexo: v as IdentidadeForm["sexo"] }))}
-              opcoes={[
-                { valor: "", texto: "Prefiro não informar" },
-                { valor: "macho", texto: "Macho" },
-                { valor: "femea", texto: "Fêmea" },
-              ]}
-            />
-            <Campo
-              label="Data de nascimento"
-              tipo="date"
-              value={identidade.nascimento}
-              onChange={(v) => setIdentidade((s) => ({ ...s, nascimento: v }))}
-            />
-            <Campo
-              label="Idade aproximada"
-              value={identidade.idade_aproximada}
-              onChange={(v) => setIdentidade((s) => ({ ...s, idade_aproximada: v }))}
-            />
-            <Select
-              label="Porte"
-              value={identidade.porte}
-              onChange={(v) => setIdentidade((s) => ({ ...s, porte: v as IdentidadeForm["porte"] }))}
-              opcoes={[
-                { valor: "", texto: "Selecione" },
-                { valor: "pequeno", texto: "Pequeno" },
-                { valor: "medio", texto: "Médio" },
-                { valor: "grande", texto: "Grande" },
-              ]}
-            />
-            <Campo
-              label="Cores"
-              value={identidade.cores}
-              onChange={(v) => setIdentidade((s) => ({ ...s, cores: v }))}
-            />
-            <Campo
-              label="Marcas distintivas"
-              linhas={2}
-              exemplo={EXEMPLOS.marcasDistintivas}
-              value={identidade.marcas_distintivas}
-              onChange={(v) => setIdentidade((s) => ({ ...s, marcas_distintivas: v }))}
-            />
-            <EditorFotoPrincipal foto={fotoPrincipal} onChange={setFotoPrincipal} />
-            <EditorFotosExtras fotos={fotos} limite={limite} onChange={setFotos} />
-          </div>
-        </BlocoExpansivel>
+      <div className="mx-auto max-w-6xl px-4 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-10 lg:px-8">
+        <div className="lg:sticky lg:top-6">
+          <BlocoExpansivel titulo="Identidade" icone="🐾" defaultAberto>
+            <div className="space-y-4">
+              <Campo
+                label="Nome do pet"
+                required
+                value={identidade.nome}
+                onChange={(v) => setIdentidade((s) => ({ ...s, nome: v }))}
+              />
+              <Campo
+                label="Apelido"
+                value={identidade.apelido}
+                onChange={(v) => setIdentidade((s) => ({ ...s, apelido: v }))}
+              />
+              <Campo
+                label="Espécie"
+                required
+                value={identidade.especie}
+                onChange={(v) => setIdentidade((s) => ({ ...s, especie: v }))}
+              />
+              <Campo
+                label="Raça"
+                value={identidade.raca}
+                onChange={(v) => setIdentidade((s) => ({ ...s, raca: v }))}
+              />
+              <Select
+                label="Sexo"
+                value={identidade.sexo}
+                onChange={(v) => setIdentidade((s) => ({ ...s, sexo: v as IdentidadeForm["sexo"] }))}
+                opcoes={[
+                  { valor: "", texto: "Prefiro não informar" },
+                  { valor: "macho", texto: "Macho" },
+                  { valor: "femea", texto: "Fêmea" },
+                ]}
+              />
+              <Campo
+                label="Data de nascimento"
+                tipo="date"
+                value={identidade.nascimento}
+                onChange={(v) => setIdentidade((s) => ({ ...s, nascimento: v }))}
+              />
+              <Campo
+                label="Idade aproximada"
+                value={identidade.idade_aproximada}
+                onChange={(v) => setIdentidade((s) => ({ ...s, idade_aproximada: v }))}
+              />
+              <Select
+                label="Porte"
+                value={identidade.porte}
+                onChange={(v) => setIdentidade((s) => ({ ...s, porte: v as IdentidadeForm["porte"] }))}
+                opcoes={[
+                  { valor: "", texto: "Selecione" },
+                  { valor: "pequeno", texto: "Pequeno" },
+                  { valor: "medio", texto: "Médio" },
+                  { valor: "grande", texto: "Grande" },
+                ]}
+              />
+              <Campo
+                label="Cores"
+                value={identidade.cores}
+                onChange={(v) => setIdentidade((s) => ({ ...s, cores: v }))}
+              />
+              <Campo
+                label="Marcas distintivas"
+                linhas={2}
+                exemplo={EXEMPLOS.marcasDistintivas}
+                value={identidade.marcas_distintivas}
+                onChange={(v) => setIdentidade((s) => ({ ...s, marcas_distintivas: v }))}
+              />
+              <EditorFotoPrincipal foto={fotoPrincipal} onChange={setFotoPrincipal} />
+              <EditorFotosExtras fotos={fotos} limite={limite} onChange={setFotos} />
+            </div>
+          </BlocoExpansivel>
+        </div>
 
+        <div>
         <BlocoExpansivel titulo="Alimentação" icone="🍖">
           <div className="space-y-4">
             <Campo
@@ -378,8 +381,11 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
             </BlocoExpansivel>
           </>
         )}
+        </div>
+      </div>
 
-        <div className="sticky bottom-0 mt-4 flex items-center gap-3 border-t border-line bg-cream/95 py-3 backdrop-blur">
+      <div className="sticky bottom-0 mt-4 border-t border-line bg-cream/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 lg:px-8">
           {erro && <p className="text-[13px] text-red-600">{erro}</p>}
           {salvo && !erro && <p className="text-[13px] font-bold text-sage">✓ Salvo</p>}
           <button

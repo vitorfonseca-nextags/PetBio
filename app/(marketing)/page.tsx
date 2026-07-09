@@ -66,8 +66,8 @@ const FAQ = [
 
 export default function HomePage() {
   return (
-    <main className="moldura-desktop mx-auto w-full max-w-md bg-cream pb-16">
-      <header className="flex items-center justify-between px-4 py-6">
+    <main className="w-full bg-cream">
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
         <span className="text-lg font-extrabold text-ink">
           pet<span className="text-brand-600">bio</span>
         </span>
@@ -76,30 +76,39 @@ export default function HomePage() {
         </Link>
       </header>
 
-      <section className="space-y-4 px-4 py-2 text-center">
-        <HeroMotion />
-        <h1 className="text-3xl font-extrabold text-balance text-ink">
-          Todos os dados do seu pet em um só lugar
-        </h1>
-        <p className="text-ink-soft">
-          Pra guardar como registro pessoal ou compartilhar com quem divide os
-          cuidados — família, pet sitter, creche, hospedagem.
-        </p>
-        <Link
-          href="/criar"
-          className="inline-block rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-6 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)]"
-        >
-          Criar meu PetBio grátis
-        </Link>
-        <Link href="/florentina" className="block text-sm font-bold text-brand-600">
-          Ver um exemplo →
-        </Link>
-        <p className="text-xs text-ink-soft">
-          O quiz é grátis. Você só paga se quiser liberar o link compartilhável e o QR Code.
-        </p>
+      {/* HERO — 2 colunas a partir de lg (texto + motion lado a lado) */}
+      <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 lg:py-14">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-20">
+          <div className="order-2 space-y-4 text-center lg:order-1 lg:text-left">
+            <h1 className="text-3xl font-extrabold text-balance text-ink lg:text-5xl xl:text-6xl">
+              Todos os dados do seu pet em um só lugar
+            </h1>
+            <p className="text-ink-soft lg:max-w-md lg:text-lg">
+              Pra guardar como registro pessoal ou compartilhar com quem divide os
+              cuidados — família, pet sitter, creche, hospedagem.
+            </p>
+            <div className="flex flex-col items-center gap-3 lg:items-start">
+              <Link
+                href="/criar"
+                className="inline-block rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-6 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)] lg:px-8 lg:py-4 lg:text-base"
+              >
+                Criar meu PetBio grátis
+              </Link>
+              <Link href="/florentina" className="text-sm font-bold text-brand-600">
+                Ver um exemplo →
+              </Link>
+            </div>
+            <p className="text-xs text-ink-soft">
+              O quiz é grátis. Você só paga se quiser liberar o link compartilhável e o QR Code.
+            </p>
+          </div>
+          <div className="order-1 lg:order-2">
+            <HeroMotion />
+          </div>
+        </div>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">Veja como fica</p>
         <Link
           href="/florentina"
@@ -118,9 +127,9 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">Por que existe</p>
-        <h2 className="mb-3 text-lg font-extrabold text-balance text-ink">
+        <h2 className="mb-3 text-lg font-extrabold text-balance text-ink lg:text-2xl">
           Toda vez que alguém cuida do seu pet, você explica tudo de novo
         </h2>
         <div className="space-y-2">
@@ -141,10 +150,10 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">Como funciona</p>
-        <h2 className="mb-4 text-lg font-extrabold text-ink">4 passos</h2>
-        <ol className="space-y-4">
+        <h2 className="mb-4 text-lg font-extrabold text-ink lg:mb-8 lg:text-2xl">4 passos</h2>
+        <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {PASSOS.map((passo, i) => (
             <li key={passo.titulo} className="flex gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
@@ -159,30 +168,35 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">O que tem no seu PetBio</p>
-        <h2 className="mb-4 text-lg font-extrabold text-ink">5 blocos de informação</h2>
-        <div className="grid grid-cols-2 gap-2.5">
+        <h2 className="mb-4 text-lg font-extrabold text-ink lg:mb-8 lg:text-2xl">5 blocos de informação</h2>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
           {BLOCOS.map((bloco, i) => (
             <div
               key={bloco.nome}
-              className={`rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)] ${i === BLOCOS.length - 1 && BLOCOS.length % 2 === 1 ? "col-span-2" : ""}`}
+              className={`rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)] lg:p-5 ${
+                i === BLOCOS.length - 1 && BLOCOS.length % 2 === 1 ? "col-span-2 sm:col-span-1" : ""
+              }`}
             >
-              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-sm">
+              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-sm lg:h-10 lg:w-10 lg:text-base">
                 {bloco.icone}
               </div>
-              <p className="text-[13px] font-bold text-ink">{bloco.nome}</p>
-              <p className="text-[11px] text-ink-soft">{bloco.desc}</p>
+              <p className="text-[13px] font-bold text-ink lg:text-sm">{bloco.nome}</p>
+              <p className="text-[11px] text-ink-soft lg:text-xs">{bloco.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">Por que o PetBio</p>
-        <div className="space-y-0.5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {BENEFICIOS.map((b) => (
-            <div key={b.titulo} className="flex gap-3 border-t border-line py-2.5 first:border-t-0">
+            <div
+              key={b.titulo}
+              className="flex gap-3 rounded-2xl bg-white p-4 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)]"
+            >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage-tint text-xs text-sage">
                 {b.icone}
               </div>
@@ -195,29 +209,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-6">
-        <p className="mb-2 px-4 text-[11px] font-bold uppercase tracking-wide text-brand-600">Quando usar</p>
-        <div className="flex gap-2.5 overflow-x-auto px-4 pb-1">
+      <section className="py-6 lg:py-10">
+        <p className="mb-2 px-4 text-[11px] font-bold uppercase tracking-wide text-brand-600 sm:px-6 lg:mx-auto lg:max-w-7xl lg:px-8">
+          Quando usar
+        </p>
+        <div className="flex gap-2.5 overflow-x-auto px-4 pb-1 sm:px-6 lg:mx-auto lg:max-w-7xl lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-8">
           {USOS.map((u) => (
             <div
               key={u.titulo}
-              className="w-36 shrink-0 rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)]"
+              className="w-36 shrink-0 rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)] lg:w-auto lg:p-5"
             >
               <span className="text-xl">{u.emoji}</span>
-              <p className="mt-1.5 text-xs font-bold text-ink">{u.titulo}</p>
-              <p className="text-[10.5px] text-ink-soft">{u.texto}</p>
+              <p className="mt-1.5 text-xs font-bold text-ink lg:text-sm">{u.titulo}</p>
+              <p className="text-[10.5px] text-ink-soft lg:text-xs">{u.texto}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="px-4 py-6">
-        <h2 className="mb-4 text-lg font-extrabold text-ink">Planos</h2>
-        <div className="flex gap-2.5">
+      <section className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
+        <h2 className="mb-4 text-lg font-extrabold text-ink lg:text-2xl">Planos</h2>
+        <div className="flex gap-2.5 lg:gap-4">
           {PLANOS.map((plano) => (
             <div
               key={plano.nome}
-              className={`relative flex-1 rounded-2xl bg-white p-4 shadow-[0_10px_24px_-18px_rgba(46,32,24,0.25)] ${
+              className={`relative flex-1 rounded-2xl bg-white p-4 shadow-[0_10px_24px_-18px_rgba(46,32,24,0.25)] lg:p-6 ${
                 plano.destaque ? "border-2 border-brand-600" : "border-2 border-transparent"
               }`}
             >
@@ -227,8 +243,8 @@ export default function HomePage() {
                 </span>
               )}
               <p className="text-[11px] font-bold uppercase text-ink-soft">{plano.nome}</p>
-              <p className="text-xl font-extrabold text-ink">{plano.preco}</p>
-              <ul className="mt-2 space-y-1 text-[11px] text-ink-soft">
+              <p className="text-xl font-extrabold text-ink lg:text-3xl">{plano.preco}</p>
+              <ul className="mt-2 space-y-1 text-[11px] text-ink-soft lg:text-[13px]">
                 {plano.itens.map((item) => (
                   <li key={item}>• {item}</li>
                 ))}
@@ -241,30 +257,30 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section className="px-4 py-6">
+      <section className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">Perguntas frequentes</p>
         <div>
           {FAQ.map((f) => (
             <details key={f.pergunta} className="group border-t border-line py-3 first:border-t-0">
-              <summary className="flex cursor-pointer list-none items-center justify-between text-[13px] font-bold text-ink">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-[13px] font-bold text-ink lg:text-sm">
                 {f.pergunta}
                 <span className="text-brand-600 group-open:rotate-45" aria-hidden>
                   +
                 </span>
               </summary>
-              <p className="mt-2 text-[12.5px] text-ink-soft">{f.resposta}</p>
+              <p className="mt-2 text-[12.5px] text-ink-soft lg:text-sm">{f.resposta}</p>
             </details>
           ))}
         </div>
       </section>
 
-      <section className="px-4 py-6">
-        <div className="rounded-3xl bg-gradient-to-br from-brand-400 to-brand-600 p-6 text-center">
-          <h2 className="text-lg font-extrabold text-white">Pronto pro PetBio do seu pet?</h2>
-          <p className="mt-1 text-[12.5px] text-white/90">Leva menos de 5 minutos, e a prévia é grátis.</p>
+      <section className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+        <div className="rounded-3xl bg-gradient-to-br from-brand-400 to-brand-600 p-6 text-center lg:p-12">
+          <h2 className="text-lg font-extrabold text-white lg:text-2xl">Pronto pro PetBio do seu pet?</h2>
+          <p className="mt-1 text-[12.5px] text-white/90 lg:text-sm">Leva menos de 5 minutos, e a prévia é grátis.</p>
           <Link
             href="/criar"
-            className="mt-4 inline-block rounded-full bg-white px-6 py-3 text-sm font-extrabold text-brand-600"
+            className="mt-4 inline-block rounded-full bg-white px-6 py-3 text-sm font-extrabold text-brand-600 lg:px-8 lg:py-4"
           >
             Criar meu PetBio grátis
           </Link>
