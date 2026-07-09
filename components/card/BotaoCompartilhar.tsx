@@ -11,9 +11,9 @@ export function BotaoCompartilhar({ habilitado }: { habilitado: boolean }) {
         type="button"
         disabled
         title="Disponível depois da compra"
-        className="cursor-not-allowed rounded-full border border-neutral-300 px-4 py-2 text-sm text-neutral-400"
+        className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-full bg-line text-ink-soft/60"
       >
-        Compartilhar (bloqueado)
+        ↗
       </button>
     );
   }
@@ -28,9 +28,10 @@ export function BotaoCompartilhar({ habilitado }: { habilitado: boolean }) {
     <button
       type="button"
       onClick={copiarLink}
-      className="rounded-full border border-neutral-900 px-4 py-2 text-sm font-medium"
+      title="Compartilhar"
+      className="flex h-8 items-center justify-center rounded-full bg-brand-50 px-3 text-sm font-bold text-brand-700"
     >
-      {copiado ? "Link copiado!" : "Compartilhar"}
+      {copiado ? "Copiado!" : "↗ Compartilhar"}
     </button>
   );
 }

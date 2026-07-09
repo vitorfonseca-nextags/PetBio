@@ -15,19 +15,14 @@ export function BlocoHistorico({ eventos }: { eventos: TipoBlocoHistorico }) {
   );
 
   return (
-    <BlocoExpansivel titulo="Histórico">
-      <ol className="space-y-4 border-l-2 border-neutral-200 pl-4">
+    <BlocoExpansivel titulo="Histórico" icone="🕰️">
+      <ol className="space-y-4 border-l-2 border-line pl-4">
         {ordenados.map((evento, i) => (
           <li key={evento.titulo + evento.data + i} className="relative">
-            <span
-              aria-hidden
-              className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-neutral-400"
-            />
-            <p className="text-xs text-neutral-500">{formatarData(evento.data)}</p>
-            <p className="font-medium text-neutral-900">{evento.titulo}</p>
-            {evento.descricao && (
-              <p className="text-sm text-neutral-700">{evento.descricao}</p>
-            )}
+            <span aria-hidden className="absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full bg-brand-600" />
+            <p className="text-[11px] font-bold text-ink-soft">{formatarData(evento.data)}</p>
+            <p className="font-bold text-ink">{evento.titulo}</p>
+            {evento.descricao && <p className="text-[13px] text-ink-soft">{evento.descricao}</p>}
           </li>
         ))}
       </ol>

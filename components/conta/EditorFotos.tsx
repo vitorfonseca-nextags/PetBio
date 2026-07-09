@@ -12,7 +12,7 @@ function Preview({ foto }: { foto: FotoEditavel }) {
   useEffect(() => () => { if (blobUrl) URL.revokeObjectURL(blobUrl); }, [blobUrl]);
 
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={foto.url ?? blobUrl ?? ""} alt="" className="aspect-square w-full rounded-lg object-cover" />;
+  return <img src={foto.url ?? blobUrl ?? ""} alt="" className="aspect-square w-full rounded-xl object-cover" />;
 }
 
 export function EditorFotoPrincipal({
@@ -24,11 +24,11 @@ export function EditorFotoPrincipal({
 }) {
   return (
     <div className="space-y-2">
-      <label htmlFor="editor-foto-principal" className="text-sm font-medium text-neutral-900">
+      <label htmlFor="editor-foto-principal" className="text-[13px] font-bold text-ink">
         Foto principal
       </label>
       {foto && (
-        <div className="w-32">
+        <div className="w-24">
           <Preview foto={foto} />
         </div>
       )}
@@ -40,7 +40,7 @@ export function EditorFotoPrincipal({
           const file = e.target.files?.[0];
           if (file) onChange({ file });
         }}
-        className="block text-sm"
+        className="block text-[13px] text-ink-soft"
       />
     </div>
   );
@@ -77,7 +77,7 @@ export function EditorFotosExtras({
 
   return (
     <div className="space-y-2">
-      <label htmlFor="editor-fotos-extras" className="text-sm font-medium text-neutral-900">
+      <label htmlFor="editor-fotos-extras" className="text-[13px] font-bold text-ink">
         Mais fotos ({fotos.length}/{limite})
       </label>
       {fotos.length > 0 && (
@@ -89,7 +89,7 @@ export function EditorFotosExtras({
                 <button
                   type="button"
                   onClick={() => remover(i)}
-                  className="absolute -right-1 -top-1 rounded-full bg-neutral-900 px-1.5 text-xs text-white"
+                  className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-xs text-white"
                   aria-label="Remover foto"
                 >
                   ×
@@ -100,7 +100,7 @@ export function EditorFotosExtras({
                   type="button"
                   onClick={() => mover(i, -1)}
                   disabled={i === 0}
-                  className="text-xs text-neutral-500 disabled:opacity-30"
+                  className="text-xs text-ink-soft disabled:opacity-30"
                   aria-label="Mover foto para cima"
                 >
                   ↑
@@ -109,7 +109,7 @@ export function EditorFotosExtras({
                   type="button"
                   onClick={() => mover(i, 1)}
                   disabled={i === fotos.length - 1}
-                  className="text-xs text-neutral-500 disabled:opacity-30"
+                  className="text-xs text-ink-soft disabled:opacity-30"
                   aria-label="Mover foto para baixo"
                 >
                   ↓
@@ -126,10 +126,10 @@ export function EditorFotosExtras({
           accept="image/*"
           multiple
           onChange={(e) => adicionar(e.target.files)}
-          className="block text-sm"
+          className="block text-[13px] text-ink-soft"
         />
       )}
-      {cheio && <p className="text-xs text-neutral-500">Limite de fotos do seu plano atingido.</p>}
+      {cheio && <p className="text-xs text-ink-soft">Limite de fotos do seu plano atingido.</p>}
     </div>
   );
 }

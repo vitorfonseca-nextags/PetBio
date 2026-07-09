@@ -13,8 +13,78 @@ if (!url || !serviceRoleKey) {
 const admin = createClient(url, serviceRoleKey);
 
 const foto = (n, alt) => ({ url: `/seed/paw-${n}.svg`, alt });
+const fotoFlorentina = (arquivo, alt) => ({ url: `/marketing/florentina-${arquivo}.jpg`, alt });
 
 const seeds = [
+  {
+    // Card-vitrine da Fase 8 (identidade visual) — fotos reais cedidas pelo
+    // operador, com autorização, especificamente pra esse fim. Usado como
+    // exemplo de "veja como fica" na LP.
+    order: {
+      order_code: "seed-florentina",
+      status: "paid",
+      plan: "completo",
+      owner_whatsapp: "5511999990004",
+    },
+    card: {
+      slug: "florentina",
+      is_watermarked: false,
+      identidade: {
+        nome: "Florentina",
+        apelido: "Flor",
+        especie: "Cachorro",
+        raca: "Pug",
+        sexo: "femea",
+        nascimento: "2017-03-10",
+        porte: "pequeno",
+        cores: "Fulvo, máscara preta",
+        marcas_distintivas: "Mancha rosada no focinho",
+        foto_principal: fotoFlorentina("banco", "Florentina sentada no banco de trás do carro"),
+        fotos: [
+          fotoFlorentina("colo", "Florentina no colo, contente"),
+          fotoFlorentina("bandana", "Florentina cochilando de bandana no carro"),
+          fotoFlorentina("sofa", "Florentina espichada no sofá"),
+          fotoFlorentina("cobertor", "Florentina encolhida no cobertor"),
+        ],
+      },
+      alimentacao: {
+        racao_marca_tipo: "Ração light sênior, grãos pequenos",
+        quantidade: "¾ de xícara, 2x ao dia",
+        horarios: "7h e 19h",
+        petiscos: "Cenoura crua, maçã sem semente",
+        proibidos: "Chocolate, uva, ossos cozidos",
+        onde_fica: "Armário perto da pia",
+      },
+      saude: {
+        vet_nome: "Dr. Marcelo Tanaka",
+        vet_telefone: "(11) 98888-4321",
+        clinica_emergencia: "VetLife 24h — (11) 4000-1234",
+        vacinas: "V8, antirrábica e gripe canina em dia (última: 02/2026)",
+        condicoes: "Síndrome braquicefálica leve (ronca e cansa fácil no calor), sobrepeso controlado",
+        medicacoes: [{ nome: "Colírio anti-inflamatório", dosagem: "1 gota", frequencia: "2x ao dia" }],
+      },
+      personalidade_rotina: {
+        temperamento: "Dorminhoca e carinhosa, ronca alto até acordada",
+        medos: "Aspirador de pó",
+        manias: "Esparrama de pernas abertas no chão",
+        comandos: "Senta, dá a pata",
+        rotina_passeio: "2 voltas curtas por dia, evitando o calor",
+        rotina_sono: "Dorme na cama dos donos, embaixo do travesseiro",
+        brinquedos: "Bicho de pelúcia, bolinha que apita",
+        lugares_favoritos: "Colo, tapete de sol na sala",
+      },
+      historico: [
+        { data: "2017-03-10", titulo: "Nascimento" },
+        { data: "2017-05-20", titulo: "Chegou em casa" },
+        {
+          data: "2023-08-15",
+          titulo: "Cirurgia de correção do palato mole",
+          descricao: "Comum em pugs — recuperação tranquila, respiração melhorou",
+        },
+        { data: "2025-11-01", titulo: "Início do colírio anti-inflamatório" },
+      ],
+    },
+  },
   {
     order: {
       order_code: "seed-completo",

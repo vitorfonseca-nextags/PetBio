@@ -1,22 +1,20 @@
 import type { BlocoIdentidade as TipoBlocoIdentidade } from "@/lib/types/card";
+import { calcularIdade } from "@/lib/idade";
 import { PilhaFotos } from "./PilhaFotos";
+import { Linha } from "./Linha";
 
 const PORTE_LABEL: Record<string, string> = {
-  pequeno: "Pequeno porte",
-  medio: "Médio porte",
-  grande: "Grande porte",
+  pequeno: "Pequeno",
+  medio: "Médio",
+  grande: "Grande",
 };
 
-function Linha({ label, valor }: { label: string; valor?: string }) {
-  if (!valor) return null;
-  return (
-    <p className="text-sm text-neutral-700">
-      <span className="font-medium text-neutral-900">{label}:</span> {valor}
-    </p>
-  );
-}
+const SEXO_LABEL: Record<string, string> = {
+  macho: "Macho",
+  femea: "Fêmea",
+};
 
-/** Bloco sempre visível e sempre aberto — não usa BlocoExpansivel. */
+/** Bloco sempre visível e sempre aberto — mesmo tratamento visual dos demais, sem o botão de recolher. */
 export function BlocoIdentidade({
   identidade,
   limiteFotos,
@@ -31,33 +29,43 @@ export function BlocoIdentidade({
     : identidade.fotos ?? [];
   const limiteTotal = identidade.foto_principal ? limiteFotos + 1 : limiteFotos;
 
+  const idade = calcularIdade(identidade.nascimento, identidade.idade_aproximada);
+  const chips = [
+    idade,
+    identidade.sexo ? SEXO_LABEL[identidade.sexo] : undefined,
+    identidade.porte ? `Porte ${PORTE_LABEL[identidade.porte]}` : undefined,
+  ].filter((c): c is string => !!c);
+
   return (
-    <section className="space-y-3 py-4">
-      <PilhaFotos fotos={todasFotos} limite={limiteTotal} nomePet={identidade.nome} />
-      <div>
-        <h1 className="text-2xl font-bold">{identidade.nome}</h1>
-        {identidade.apelido && (
-          <p className="text-neutral-500">&ldquo;{identidade.apelido}&rdquo;</p>
-        )}
+    <section className="mt-4 overflow-hidden rounded-2xl bg-white shadow-[0_10px_24px_-18px_rgba(46,32,24,0.25)]">
+      <div className="px-4 pt-4">
+        <PilhaFotos fotos={todasFotos} limite={limiteTotal} nomePet={identidade.nome} />
       </div>
-      <div className="space-y-1">
-        <Linha label="Espécie" valor={identidade.especie} />
-        <Linha label="Raça" valor={identidade.raca} />
-        <Linha
-          label="Sexo"
-          valor={
-            identidade.sexo === "macho"
-              ? "Macho"
-              : identidade.sexo === "femea"
-                ? "Fêmea"
-                : undefined
-          }
-        />
-        <Linha label="Nascimento" valor={identidade.nascimento} />
-        <Linha label="Idade" valor={identidade.idade_aproximada} />
-        <Linha label="Porte" valor={identidade.porte ? PORTE_LABEL[identidade.porte] : undefined} />
-        <Linha label="Cores" valor={identidade.cores} />
-        <Linha label="Marcas distintivas" valor={identidade.marcas_distintivas} />
+      <div className="px-4 pb-4 pt-3">
+        <h1 className="flex items-baseline gap-1.5 text-xl font-extrabold text-ink">
+          {identidade.nome} <span className="text-sm">🐾</span>
+        </h1>
+        {identidade.apelido && <p className="text-[13px] font-semibold text-ink-soft">{identidade.apelido}</p>}
+
+        {chips.length > 0 && (
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {chips.map((chip) => (
+              <span
+                key={chip}
+                className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11px] font-bold text-ink"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-3">
+          <Linha label="Espécie" valor={identidade.especie} />
+          <Linha label="Raça" valor={identidade.raca} />
+          <Linha label="Cores" valor={identidade.cores} />
+          <Linha label="Marcas distintivas" valor={identidade.marcas_distintivas} />
+        </div>
       </div>
     </section>
   );

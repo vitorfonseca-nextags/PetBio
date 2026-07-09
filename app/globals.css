@@ -12,6 +12,23 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/*
+ * Identidade visual do PetBio (Fase 8.1, aprovada) — laranja terracota +
+ * creme, cantos arredondados, sombras suaves. Ver docs/IDENTIDADE.md.
+ */
+@theme {
+  --color-brand-50: #fce3d0;
+  --color-brand-400: #ff9d5c;
+  --color-brand-600: #e8703a;
+  --color-brand-700: #c85a2a;
+  --color-cream: #fbf2e4;
+  --color-ink: #2e2018;
+  --color-ink-soft: #93816f;
+  --color-line: #f1e1cd;
+  --color-sage: #6e8f5c;
+  --color-sage-tint: #e4ebdd;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

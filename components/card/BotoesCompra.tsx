@@ -23,14 +23,14 @@ export function BotoesCompra({ orderCode }: { orderCode: string }) {
           <a
             key={plano.id}
             href={linkCheckoutYampi(plano.env, orderCode)}
-            className="block rounded-lg bg-emerald-700 px-4 py-3 text-center text-sm font-medium text-white"
+            className="block rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-4 py-3 text-center text-sm font-extrabold text-white shadow-[0_10px_20px_-10px_rgba(232,112,58,0.55)]"
           >
             Comprar {plano.nome} — {plano.preco}
           </a>
         ) : (
           <p
             key={plano.id}
-            className="rounded-lg border border-dashed border-neutral-300 px-4 py-3 text-center text-sm text-neutral-400"
+            className="rounded-full border border-dashed border-line px-4 py-3 text-center text-sm text-ink-soft"
           >
             {plano.nome} ({plano.preco}) — checkout em configuração
           </p>

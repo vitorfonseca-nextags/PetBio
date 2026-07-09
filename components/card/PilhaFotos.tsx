@@ -16,16 +16,22 @@ export function PilhaFotos({ fotos, limite, nomePet }: { fotos: Foto[]; limite: 
   const [ordem, setOrdem] = useState(() => visiveis.map((_, i) => i));
   const [avancos, setAvancos] = useState(0);
   const [arrasto, setArrasto] = useState<{ inicioX: number; deltaX: number } | null>(null);
-  const [saindo, setSaindo] = useState<1 | -1 | null>(null);
+  const [saindo, setSaindo] = useState<{ sequencia: 1 | -1; voo: 1 | -1 } | null>(null);
 
   if (visiveis.length === 0) return null;
 
-  function avancar(dir: 1 | -1) {
+  // `sequencia` decide qual foto assume a frente da pilha (1 = próxima,
+  // -1 = anterior). `voo` é só a direção visual em que o card atual sai da
+  // tela — ao arrastar, sai continuando o próprio arrasto; nos botões, sai
+  // no sentido "de leitura" (próxima sai pela esquerda).
+  function avancar(sequencia: 1 | -1, voo: 1 | -1 = sequencia === 1 ? -1 : 1) {
     if (saindo) return;
-    setSaindo(dir);
+    setSaindo({ sequencia, voo });
     setTimeout(() => {
-      setOrdem((atual) => [...atual.slice(1), atual[0]]);
-      setAvancos((n) => n + 1);
+      setOrdem((atual) =>
+        sequencia === 1 ? [...atual.slice(1), atual[0]] : [atual[atual.length - 1], ...atual.slice(0, -1)],
+      );
+      setAvancos((n) => n + sequencia);
       setSaindo(null);
       setArrasto(null);
     }, 320);
@@ -42,13 +48,15 @@ export function PilhaFotos({ fotos, limite, nomePet }: { fotos: Foto[]; limite: 
   function aoSoltar() {
     if (!arrasto) return;
     if (Math.abs(arrasto.deltaX) > LIMITE_ARRASTO) {
-      avancar(arrasto.deltaX > 0 ? 1 : -1);
+      const voo = arrasto.deltaX < 0 ? -1 : 1;
+      const sequencia = arrasto.deltaX < 0 ? 1 : -1;
+      avancar(sequencia, voo);
     } else {
       setArrasto(null);
     }
   }
 
-  const indiceAtual = avancos % visiveis.length;
+  const indiceAtual = ((avancos % visiveis.length) + visiveis.length) % visiveis.length;
 
   return (
     <div>
@@ -60,12 +68,15 @@ export function PilhaFotos({ fotos, limite, nomePet }: { fotos: Foto[]; limite: 
           let opacity = 1;
           let transition = "transform 0.32s cubic-bezier(.2,.8,.2,1), opacity 0.32s";
 
-          if (frente && arrasto) {
-            transform = `translateX(${arrasto.deltaX}px) rotate(${arrasto.deltaX / 18}deg)`;
-            transition = "none";
-          } else if (frente && saindo) {
-            transform = `translateX(${saindo * 420}px) rotate(${saindo * 26}deg)`;
-            opacity = 0;
+          if (frente) {
+            // estado de repouso é transform="" / opacity=1 (os defaults acima)
+            if (arrasto) {
+              transform = `translateX(${arrasto.deltaX}px) rotate(${arrasto.deltaX / 18}deg)`;
+              transition = "none";
+            } else if (saindo) {
+              transform = `translateX(${saindo.voo * 420}px) rotate(${saindo.voo * 26}deg)`;
+              opacity = 0;
+            }
           } else if (posicao === 1) {
             transform = "translateY(8px) scale(0.96) rotate(-3deg)";
             opacity = 0.9;

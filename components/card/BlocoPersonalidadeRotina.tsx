@@ -1,19 +1,11 @@
 import type { BlocoPersonalidadeRotina as TipoBloco } from "@/lib/types/card";
 import { BlocoExpansivel } from "./BlocoExpansivel";
-
-function Linha({ label, valor }: { label: string; valor?: string }) {
-  if (!valor) return null;
-  return (
-    <p className="text-sm text-neutral-700">
-      <span className="font-medium text-neutral-900">{label}:</span> {valor}
-    </p>
-  );
-}
+import { Linha } from "./Linha";
 
 export function BlocoPersonalidadeRotina({ bloco }: { bloco: TipoBloco }) {
   return (
-    <BlocoExpansivel titulo="Personalidade e rotina">
-      <div className="space-y-1">
+    <BlocoExpansivel titulo="Personalidade e rotina" icone="🎾">
+      <div>
         <Linha label="Temperamento" valor={bloco.temperamento} />
         <Linha label="Medos" valor={bloco.medos} />
         <Linha label="Manias" valor={bloco.manias} />

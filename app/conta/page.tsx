@@ -20,43 +20,56 @@ export default async function ContaPage() {
 
   const cards = (linhas ?? []).map((c) => {
     const order = c.order as unknown as { plan: string | null };
+    const identidade = c.identidade as { nome?: string; foto_principal?: { url: string } };
     return {
       id: c.id as string,
       slug: c.slug as string,
-      identidade: c.identidade as { nome?: string },
+      nome: identidade?.nome ?? "Pet sem nome",
+      fotoUrl: identidade?.foto_principal?.url,
       plano: order.plan,
     };
   });
 
   return (
-    <main className="mx-auto min-h-screen max-w-md px-4 pt-10 pb-16">
+    <main className="mx-auto min-h-screen max-w-md bg-cream px-4 pt-8 pb-16">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Seus cards</h1>
+        <h1 className="text-xl font-extrabold text-ink">Seus cards</h1>
         <form action={sair}>
-          <button type="submit" className="text-sm text-neutral-500 underline">
+          <button type="submit" className="text-[13px] font-bold text-ink-soft">
             Sair
           </button>
         </form>
       </div>
-      <p className="mt-1 text-sm text-neutral-600">{sessao.email}</p>
+      <p className="mt-1 text-[13px] text-ink-soft">{sessao.email}</p>
 
       {cards.length === 0 ? (
-        <p className="mt-8 text-sm text-neutral-600">Nenhum card pago encontrado para este e-mail.</p>
+        <p className="mt-8 text-[13px] text-ink-soft">Nenhum card pago encontrado para este e-mail.</p>
       ) : (
         <ul className="mt-6 space-y-3">
           {cards.map((card) => (
-            <li key={card.id} className="rounded-lg border border-neutral-200 p-4">
-              <p className="font-semibold">{card.identidade?.nome ?? "Pet sem nome"}</p>
-              <p className="text-sm text-neutral-500">
-                /{card.slug} · plano {card.plano === "completo" ? "Completo" : "Simples"}
-              </p>
-              <div className="mt-2 flex gap-4 text-sm">
-                <Link href={`/conta/${card.id}`} className="font-medium text-emerald-700 underline">
-                  Editar
-                </Link>
-                <Link href={`/${card.slug}`} className="text-neutral-500 underline" target="_blank">
-                  Ver card público
-                </Link>
+            <li
+              key={card.id}
+              className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[0_10px_24px_-18px_rgba(46,32,24,0.25)]"
+            >
+              <div className="h-[50px] w-[50px] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600">
+                {card.fotoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={card.fotoUrl} alt={card.nome} className="h-full w-full object-cover object-[50%_25%]" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="font-extrabold text-ink">{card.nome}</p>
+                <span className="mt-0.5 inline-block rounded-full bg-brand-50 px-2 py-0.5 text-[9.5px] font-extrabold text-brand-700">
+                  {card.plano === "completo" ? "Completo" : "Simples"}
+                </span>
+                <div className="mt-1.5 flex gap-3 text-[12px] font-bold">
+                  <Link href={`/conta/${card.id}`} className="text-brand-600">
+                    Editar
+                  </Link>
+                  <Link href={`/${card.slug}`} className="text-ink-soft" target="_blank">
+                    Ver card público
+                  </Link>
+                </div>
               </div>
             </li>
           ))}

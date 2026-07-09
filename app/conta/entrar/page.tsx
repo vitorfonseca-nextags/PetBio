@@ -43,16 +43,19 @@ export default function EntrarPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-sm px-4 pt-16">
-      <h1 className="text-xl font-bold">Entrar na área do cliente</h1>
-      <p className="mt-1 text-sm text-neutral-600">
+    <main className="mx-auto min-h-screen max-w-sm bg-cream px-4 pt-16">
+      <p className="text-center text-xl font-extrabold text-ink">
+        pet<span className="text-brand-600">bio</span>
+      </p>
+      <h1 className="mt-6 text-center text-lg font-extrabold text-ink">Entrar na área do cliente</h1>
+      <p className="mt-1 text-center text-[13px] text-ink-soft">
         Use o e-mail que você informou na compra do PetBio.
       </p>
 
       {etapa === "email" && (
         <form onSubmit={pedirCodigo} className="mt-6 space-y-3">
           <div className="space-y-1">
-            <label htmlFor="email" className="text-sm font-medium text-neutral-900">
+            <label htmlFor="email" className="text-[13px] font-bold text-ink">
               E-mail
             </label>
             <input
@@ -61,15 +64,15 @@ export default function EntrarPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+              className="w-full rounded-xl border border-line bg-white px-3 py-2.5 text-[13px] text-ink focus:border-brand-600 focus:outline-none"
               placeholder="voce@email.com"
             />
           </div>
-          {erro && <p className="text-sm text-red-600">{erro}</p>}
+          {erro && <p className="text-[13px] text-red-600">{erro}</p>}
           <button
             type="submit"
             disabled={enviando}
-            className="w-full rounded-full bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="w-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)] disabled:opacity-60"
           >
             {enviando ? "Enviando..." : "Enviar código"}
           </button>
@@ -78,9 +81,9 @@ export default function EntrarPage() {
 
       {etapa === "codigo" && (
         <form onSubmit={confirmarCodigo} className="mt-6 space-y-3">
-          {mensagem && <p className="text-sm text-emerald-700">{mensagem}</p>}
+          {mensagem && <p className="rounded-xl bg-sage-tint px-3 py-2 text-[13px] text-sage">{mensagem}</p>}
           <div className="space-y-1">
-            <label htmlFor="codigo" className="text-sm font-medium text-neutral-900">
+            <label htmlFor="codigo" className="text-[13px] font-bold text-ink">
               Código de 6 dígitos
             </label>
             <input
@@ -91,22 +94,22 @@ export default function EntrarPage() {
               required
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-center text-lg tracking-[0.5em]"
+              className="w-full rounded-xl border border-line bg-white px-3 py-2.5 text-center text-lg font-extrabold tracking-[0.5em] text-ink focus:border-brand-600 focus:outline-none"
               placeholder="000000"
             />
           </div>
-          {erro && <p className="text-sm text-red-600">{erro}</p>}
+          {erro && <p className="text-[13px] text-red-600">{erro}</p>}
           <button
             type="submit"
             disabled={enviando || codigo.length !== 6}
-            className="w-full rounded-full bg-emerald-700 px-5 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="w-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-5 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)] disabled:opacity-60"
           >
             {enviando ? "Confirmando..." : "Confirmar"}
           </button>
           <button
             type="button"
             onClick={() => setEtapa("email")}
-            className="w-full text-center text-sm text-neutral-500 underline"
+            className="w-full text-center text-[13px] font-bold text-ink-soft"
           >
             Usar outro e-mail
           </button>
