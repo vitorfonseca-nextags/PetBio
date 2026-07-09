@@ -126,7 +126,7 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-cream pb-4">
+    <main className="moldura-desktop mx-auto min-h-screen w-full max-w-md bg-cream pb-4">
       <div className="flex items-center justify-between px-4 py-4">
         <Link href="/conta" className="text-[13px] font-bold text-ink-soft">
           ← Seus cards

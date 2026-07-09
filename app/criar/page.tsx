@@ -170,7 +170,7 @@ export default function QuizPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-cream px-4 pb-16">
+    <main className="moldura-desktop mx-auto min-h-screen w-full max-w-md bg-cream px-4 pb-16">
       <h1 className="pt-6 text-xl font-extrabold text-ink">Criar o PetBio do seu pet</h1>
       <p className="mt-1 text-sm text-ink-soft">Leva uns 5 minutos — sem enrolação.</p>
       <Progresso atual={passoIndex} total={PASSOS.length} />

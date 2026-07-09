@@ -25,6 +25,7 @@ const BLOCOS = [
   { icone: "🍖", nome: "Alimentação", desc: "Ração, horários, proibidos" },
   { icone: "🩺", nome: "Saúde", desc: "Vet, vacinas, medicações" },
   { icone: "🎾", nome: "Personalidade", desc: "Temperamento, manias, rotina" },
+  { icone: "🕰️", nome: "Histórico", desc: "Linha do tempo do seu pet" },
 ];
 
 const BENEFICIOS = [
@@ -65,7 +66,7 @@ const FAQ = [
 
 export default function HomePage() {
   return (
-    <main className="mx-auto w-full max-w-md bg-cream pb-16">
+    <main className="moldura-desktop mx-auto w-full max-w-md bg-cream pb-16">
       <header className="flex items-center justify-between px-4 py-6">
         <span className="text-lg font-extrabold text-ink">
           pet<span className="text-brand-600">bio</span>
@@ -162,8 +163,11 @@ export default function HomePage() {
         <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">O que tem no seu PetBio</p>
         <h2 className="mb-4 text-lg font-extrabold text-ink">5 blocos de informação</h2>
         <div className="grid grid-cols-2 gap-2.5">
-          {BLOCOS.map((bloco) => (
-            <div key={bloco.nome} className="rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)]">
+          {BLOCOS.map((bloco, i) => (
+            <div
+              key={bloco.nome}
+              className={`rounded-2xl bg-white p-3 shadow-[0_8px_18px_-14px_rgba(46,32,24,0.25)] ${i === BLOCOS.length - 1 && BLOCOS.length % 2 === 1 ? "col-span-2" : ""}`}
+            >
               <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-sm">
                 {bloco.icone}
               </div>

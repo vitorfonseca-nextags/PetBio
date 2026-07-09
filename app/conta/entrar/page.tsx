@@ -43,7 +43,7 @@ export default function EntrarPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-sm bg-cream px-4 pt-16">
+    <main className="moldura-desktop mx-auto min-h-screen w-full max-w-sm bg-cream px-4 pt-16">
       <p className="text-center text-xl font-extrabold text-ink">
         pet<span className="text-brand-600">bio</span>
       </p>

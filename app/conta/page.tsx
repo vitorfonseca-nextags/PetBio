@@ -31,7 +31,7 @@ export default async function ContaPage() {
   });
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-cream px-4 pt-8 pb-16">
+    <main className="moldura-desktop mx-auto min-h-screen w-full max-w-md bg-cream px-4 pt-8 pb-16">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-extrabold text-ink">Seus cards</h1>
         <form action={sair}>

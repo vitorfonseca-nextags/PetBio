@@ -50,3 +50,4 @@ next-env.d.ts
 # fotos originais enviadas pelo operador pra referência de mockup — as
 # versões usadas de verdade no site já estão em /public/marketing
 /docs/fotos-florentina/
+.env*

@@ -29,25 +29,36 @@
   --color-sage-tint: #e4ebdd;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/*
+ * Fundo da página (fora do conteúdo mobile-first) — o produto é pra abrir no
+ * celular (link chega pelo WhatsApp), mas em tela grande isso dava uma faixa
+ * estreita solta num fundo branco sem graça. Esse degradê + a moldura
+ * ".moldura-desktop" (abaixo) fazem o conteúdo flutuar como um cartão em
+ * telas ≥640px, sem mudar nada do layout mobile-first em si.
+ */
 body {
-  background: var(--background);
+  background: linear-gradient(160deg, #f5e6cd 0%, #ecdab9 100%);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+ * Sem overflow-hidden de propósito: qualquer ancestral com overflow
+ * diferente de visible vira o "container" do position:sticky pros filhos —
+ * quebraria a barra fixa do card público e da área do cliente. Cantos que
+ * precisam ficar arredondados mesmo sem o clip (a barra sticky) recebem o
+ * arredondamento neles mesmos.
+ */
+.moldura-desktop {
+  @apply sm:my-10 sm:rounded-[32px] sm:shadow-2xl sm:ring-1 sm:ring-black/10;
 }
 
 /* HeroMotion (LP) — rola automaticamente pelas paradas do card de exemplo */
 @keyframes passeio-card {
   0%, 13% { transform: translateY(0); }
-  19%, 32% { transform: translateY(-280px); }
-  38%, 51% { transform: translateY(-560px); }
-  57%, 70% { transform: translateY(-840px); }
+  19%, 32% { transform: translateY(-500px); }
+  38%, 51% { transform: translateY(-1000px); }
+  57%, 70% { transform: translateY(-1500px); }
   78%, 100% { transform: translateY(0); }
 }
 .animate-passeio-card {

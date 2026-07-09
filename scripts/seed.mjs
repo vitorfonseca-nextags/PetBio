@@ -25,6 +25,9 @@ const seeds = [
       status: "paid",
       plan: "completo",
       owner_whatsapp: "5511999990004",
+      // dono de verdade (operador) — pra poder logar em /conta/entrar e ver
+      // o card da Florentina como exemplo de "área do cliente" real.
+      owner_email: "vitorfonseca@nextags.com.br",
     },
     card: {
       slug: "florentina",
