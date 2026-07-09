@@ -26,14 +26,10 @@ export function ListaHistorico({
   return (
     <div className="space-y-4">
       {eventos.map((evento, i) => (
-        <div key={i} className="space-y-2 rounded-lg border border-neutral-200 p-3">
+        <div key={i} className="space-y-2 rounded-xl border border-line bg-cream p-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-neutral-500">Evento {i + 1}</span>
-            <button
-              type="button"
-              onClick={() => remover(i)}
-              className="text-xs text-red-600 underline"
-            >
+            <span className="text-xs font-bold text-ink-soft">Evento {i + 1}</span>
+            <button type="button" onClick={() => remover(i)} className="text-xs font-bold text-red-600">
               Remover
             </button>
           </div>
@@ -58,11 +54,7 @@ export function ListaHistorico({
           />
         </div>
       ))}
-      <button
-        type="button"
-        onClick={adicionar}
-        className="text-sm font-medium text-emerald-700 underline"
-      >
+      <button type="button" onClick={adicionar} className="text-sm font-bold text-brand-600">
         + adicionar evento
       </button>
     </div>

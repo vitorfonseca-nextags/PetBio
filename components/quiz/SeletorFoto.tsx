@@ -7,8 +7,11 @@ function Preview({ file }: { file: File }) {
   useEffect(() => () => URL.revokeObjectURL(url), [url]);
 
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={url} alt="" className="aspect-square w-full rounded-lg object-cover" />;
+  return <img src={url} alt="" className="aspect-square w-full rounded-xl object-cover" />;
 }
+
+const CLASSE_INPUT_ARQUIVO =
+  "block w-full text-sm text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-brand-50 file:px-3 file:py-2 file:text-xs file:font-bold file:text-brand-700";
 
 export function SeletorFotoPrincipal({
   arquivo,
@@ -19,7 +22,7 @@ export function SeletorFotoPrincipal({
 }) {
   return (
     <div className="space-y-2">
-      <label htmlFor="foto-principal" className="text-sm font-medium text-neutral-900">
+      <label htmlFor="foto-principal" className="text-sm font-bold text-ink">
         Foto principal
       </label>
       {arquivo && (
@@ -32,7 +35,7 @@ export function SeletorFotoPrincipal({
         type="file"
         accept="image/*"
         onChange={(e) => onChange(e.target.files?.[0] ?? null)}
-        className="block text-sm"
+        className={CLASSE_INPUT_ARQUIVO}
       />
     </div>
   );
@@ -61,7 +64,7 @@ export function SeletorFotosExtras({
 
   return (
     <div className="space-y-2">
-      <label htmlFor="fotos-extras" className="text-sm font-medium text-neutral-900">
+      <label htmlFor="fotos-extras" className="text-sm font-bold text-ink">
         Mais fotos ({arquivos.length}/{limite})
       </label>
       {arquivos.length > 0 && (
@@ -72,7 +75,7 @@ export function SeletorFotosExtras({
               <button
                 type="button"
                 onClick={() => remover(i)}
-                className="absolute -right-1 -top-1 rounded-full bg-neutral-900 px-1.5 text-xs text-white"
+                className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-xs text-white"
                 aria-label="Remover foto"
               >
                 ×
@@ -88,14 +91,10 @@ export function SeletorFotosExtras({
           accept="image/*"
           multiple
           onChange={(e) => adicionar(e.target.files)}
-          className="block text-sm"
+          className={CLASSE_INPUT_ARQUIVO}
         />
       )}
-      {cheio && (
-        <p className="text-xs text-neutral-500">
-          Limite de fotos do seu plano atingido.
-        </p>
-      )}
+      {cheio && <p className="text-xs text-ink-soft">Limite de fotos atingido.</p>}
     </div>
   );
 }

@@ -65,3 +65,14 @@ Rodei o quiz de ponta a ponta com Chromium headless (Playwright), com fotos,
 medicação e evento de histórico, confirmando gravação correta no Supabase
 (order com `plan=null`, card com todos os blocos preenchidos) e render
 correto da prévia completa. Registro de teste removido depois de conferir.
+
+## Fase 8.4 — identidade visual e microcopy
+
+Aplicada a identidade da Fase 8 (ver `docs/IDENTIDADE.md`) — `Campo` e o novo
+`Select` (`components/quiz/*`) ganharam a paleta laranja/creme, o que também
+resolveu de graça a inconsistência visual que existia no editor da área do
+cliente (ele reaproveita esses mesmos componentes). Cada etapa ganhou um
+ícone (os mesmos dos blocos do card público) e uma linha de contexto onde
+fazia sentido (Saúde, Personalidade, Histórico, Contato). Sem mudança de
+estrutura/lógica — só visual e de texto. Testado de novo de ponta a ponta
+depois da mudança (criação de pedido real, sem erros de console).

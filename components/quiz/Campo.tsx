@@ -26,15 +26,15 @@ export function Campo({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-medium text-neutral-900">
+        <label htmlFor={id} className="text-sm font-bold text-ink">
           {label}
-          {required && <span className="text-red-600"> *</span>}
+          {required && <span className="text-brand-600"> *</span>}
         </label>
         {exemplo && (
           <button
             type="button"
             onClick={() => onChange(exemplo)}
-            className="shrink-0 text-xs font-medium text-emerald-700 underline underline-offset-2"
+            className="shrink-0 text-xs font-bold text-brand-600"
           >
             Gerar exemplo
           </button>
@@ -47,7 +47,7 @@ export function Campo({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={linhas}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-sm text-ink focus:border-brand-600 focus:bg-white focus:outline-none"
         />
       ) : (
         <input
@@ -56,7 +56,7 @@ export function Campo({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-sm text-ink focus:border-brand-600 focus:bg-white focus:outline-none"
         />
       )}
     </div>

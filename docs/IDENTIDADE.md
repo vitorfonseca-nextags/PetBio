@@ -43,9 +43,12 @@ SF Pro Rounded no Safari/macOS/iOS), caindo pra `"SF Pro Rounded"`,
   `BotoesCompra`. Chips de idade/sexo/porte (`lib/idade.ts`), rodapé com QR
   real + link + "atualizado há X" (`lib/tempo.ts`).
 - **Área do cliente** (`app/conta/*`, `components/conta/*`): login, lista,
-  editor — usa `CampoEditor`/`SelectEditor` (novos, próprios da área do
-  cliente) em vez do `Campo` do quiz, de propósito: o quiz ainda não passou
-  pelo refino visual (Fase 8.4), então a paleta nova não vaza pra lá.
+  editor — usa `Campo`/`Select` do quiz (`components/quiz/*`).
+- **Quiz** (`app/criar/page.tsx`, `components/quiz/*`): Fase 8.4 — mesma
+  identidade, cabeçalho com ícone por etapa (🐾 🍖 🩺 🎾 🕰️ 📱, os mesmos dos
+  blocos do card), `accent-brand-600` no checkbox de medicação, botões de
+  upload de foto estilizados via `file:` (Tailwind), toques de microcopy
+  (ver seção abaixo).
 
 ## Decisões de conteúdo (não só visual)
 
@@ -56,10 +59,12 @@ SF Pro Rounded no Safari/macOS/iOS), caindo pra `"SF Pro Rounded"`,
   por exemplo, "atrasada".
 - **Sem depoimentos falsos na LP** — a loja (Cayen Joias / Yampi) ainda não
   vendeu nenhum PetBio de verdade. Seção fica pra quando houver clientes reais.
-- **`ListaMedicacoes`/`ListaHistorico`** (usados dentro do editor) ainda
-  usam o `Campo` antigo do quiz por dentro — ficaram visualmente um degrau
-  abaixo do resto do editor. Não justifica duplicar esses componentes
-  agora; considerar se migrar quando o quiz (Fase 8.4) for refinado.
+- **"Prefiro não dizer" → "Prefiro não informar"** no select de Sexo (quiz e
+  editor): a frase antiga personificava o pet ("ele" preferindo não dizer);
+  a nova é sobre a escolha do dono de informar ou não.
+- **Ícone por etapa no quiz** reaproveita os mesmos emojis dos blocos do card
+  público — reforça que o quiz e o card são "a mesma coisa" vista em dois
+  momentos, sem inventar um sistema de ícones novo.
 
 ## Card de exemplo: Florentina
 

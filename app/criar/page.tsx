@@ -10,6 +10,7 @@ import type {
 import { limiteFotos } from "@/lib/plano";
 import { EXEMPLOS } from "@/lib/quiz/exemplos";
 import { Campo } from "@/components/quiz/Campo";
+import { Select } from "@/components/quiz/Select";
 import { SeletorFotoPrincipal, SeletorFotosExtras } from "@/components/quiz/SeletorFoto";
 import { ListaMedicacoes } from "@/components/quiz/ListaMedicacoes";
 import { ListaHistorico } from "@/components/quiz/ListaHistorico";
@@ -77,7 +78,14 @@ const PERSONALIDADE_INICIAL: BlocoPersonalidadeRotina = {
 
 // O quiz não pergunta plano — coleta tudo, como se fosse o Completo. O corte
 // por plano só acontece na renderização, depois da compra (ver docs/QUIZ.md).
-const PASSOS = ["identidade", "alimentacao", "saude", "personalidade", "historico", "contato"];
+const PASSOS = [
+  { chave: "identidade", icone: "🐾", titulo: "Identidade" },
+  { chave: "alimentacao", icone: "🍖", titulo: "Alimentação" },
+  { chave: "saude", icone: "🩺", titulo: "Saúde" },
+  { chave: "personalidade", icone: "🎾", titulo: "Personalidade" },
+  { chave: "historico", icone: "🕰️", titulo: "Histórico" },
+  { chave: "contato", icone: "📱", titulo: "Contato" },
+];
 const LIMITE_FOTOS_QUIZ = limiteFotos(null);
 
 export default function QuizPage() {
@@ -92,7 +100,7 @@ export default function QuizPage() {
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, startTransition] = useTransition();
 
-  const passoAtual = PASSOS[passoIndex];
+  const passoAtual = PASSOS[passoIndex].chave;
 
   function podeAvancar(): boolean {
     switch (passoAtual) {
@@ -162,12 +170,20 @@ export default function QuizPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-md px-4 pb-16">
-      <h1 className="pt-6 text-xl font-bold">Criar o PetBio do seu pet</h1>
+    <main className="mx-auto min-h-screen max-w-md bg-cream px-4 pb-16">
+      <h1 className="pt-6 text-xl font-extrabold text-ink">Criar o PetBio do seu pet</h1>
+      <p className="mt-1 text-sm text-ink-soft">Leva uns 5 minutos — sem enrolação.</p>
       <Progresso atual={passoIndex} total={PASSOS.length} />
 
+      <div className="mb-4 flex items-center gap-2.5">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-sm">
+          {PASSOS[passoIndex].icone}
+        </span>
+        <h2 className="text-base font-extrabold text-ink">{PASSOS[passoIndex].titulo}</h2>
+      </div>
+
       {passoAtual === "identidade" && (
-        <div className="space-y-4 py-4">
+        <div className="space-y-4">
           <Campo
             label="Nome do pet"
             required
@@ -191,23 +207,16 @@ export default function QuizPage() {
             value={identidade.raca}
             onChange={(v) => setIdentidade((s) => ({ ...s, raca: v }))}
           />
-          <div className="space-y-1">
-            <label htmlFor="identidade-sexo" className="text-sm font-medium text-neutral-900">
-              Sexo
-            </label>
-            <select
-              id="identidade-sexo"
-              value={identidade.sexo}
-              onChange={(e) =>
-                setIdentidade((s) => ({ ...s, sexo: e.target.value as IdentidadeForm["sexo"] }))
-              }
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-            >
-              <option value="">Prefiro não dizer</option>
-              <option value="macho">Macho</option>
-              <option value="femea">Fêmea</option>
-            </select>
-          </div>
+          <Select
+            label="Sexo"
+            value={identidade.sexo}
+            onChange={(v) => setIdentidade((s) => ({ ...s, sexo: v as IdentidadeForm["sexo"] }))}
+            opcoes={[
+              { valor: "", texto: "Prefiro não informar" },
+              { valor: "macho", texto: "Macho" },
+              { valor: "femea", texto: "Fêmea" },
+            ]}
+          />
           <Campo
             label="Data de nascimento"
             tipo="date"
@@ -219,24 +228,17 @@ export default function QuizPage() {
             value={identidade.idade_aproximada}
             onChange={(v) => setIdentidade((s) => ({ ...s, idade_aproximada: v }))}
           />
-          <div className="space-y-1">
-            <label htmlFor="identidade-porte" className="text-sm font-medium text-neutral-900">
-              Porte
-            </label>
-            <select
-              id="identidade-porte"
-              value={identidade.porte}
-              onChange={(e) =>
-                setIdentidade((s) => ({ ...s, porte: e.target.value as IdentidadeForm["porte"] }))
-              }
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-            >
-              <option value="">Selecione</option>
-              <option value="pequeno">Pequeno</option>
-              <option value="medio">Médio</option>
-              <option value="grande">Grande</option>
-            </select>
-          </div>
+          <Select
+            label="Porte"
+            value={identidade.porte}
+            onChange={(v) => setIdentidade((s) => ({ ...s, porte: v as IdentidadeForm["porte"] }))}
+            opcoes={[
+              { valor: "", texto: "Selecione" },
+              { valor: "pequeno", texto: "Pequeno" },
+              { valor: "medio", texto: "Médio" },
+              { valor: "grande", texto: "Grande" },
+            ]}
+          />
           <Campo
             label="Cores"
             value={identidade.cores}
@@ -262,7 +264,7 @@ export default function QuizPage() {
       )}
 
       {passoAtual === "alimentacao" && (
-        <div className="space-y-4 py-4">
+        <div className="space-y-4">
           <Campo
             label="Ração (marca e tipo)"
             exemplo={EXEMPLOS.racaoMarcaTipo}
@@ -304,7 +306,10 @@ export default function QuizPage() {
       )}
 
       {passoAtual === "saude" && (
-        <div className="space-y-4 py-4">
+        <div className="space-y-4">
+          <p className="text-sm text-ink-soft">
+            Pra quem for cuidar do seu pet saber o que fazer numa emergência.
+          </p>
           <Campo
             label="Nome do veterinário"
             value={saude.vet_nome ?? ""}
@@ -336,11 +341,12 @@ export default function QuizPage() {
             onChange={(v) => setSaude((s) => ({ ...s, clinica_emergencia: v }))}
           />
           <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-neutral-900">
+            <label className="flex items-center gap-2.5 py-1 text-sm font-bold text-ink">
               <input
                 type="checkbox"
                 checked={tomaMedicacao}
                 onChange={(e) => setTomaMedicacao(e.target.checked)}
+                className="h-4 w-4 accent-brand-600"
               />
               Toma alguma medicação regularmente?
             </label>
@@ -355,7 +361,10 @@ export default function QuizPage() {
       )}
 
       {passoAtual === "personalidade" && (
-        <div className="space-y-4 py-4">
+        <div className="space-y-4">
+          <p className="text-sm text-ink-soft">
+            O que faz o seu pet ser único — opcional, mas deixa o card mais gostoso de ler.
+          </p>
           <Campo
             label="Temperamento"
             linhas={2}
@@ -409,19 +418,17 @@ export default function QuizPage() {
       )}
 
       {passoAtual === "historico" && (
-        <div className="space-y-3 py-4">
-          <p className="text-sm text-neutral-600">
-            Eventos marcantes da vida do seu pet (opcional — pode pular e adicionar depois).
+        <div className="space-y-3">
+          <p className="text-sm text-ink-soft">
+            Eventos marcantes da vida do seu pet — opcional, pode pular e adicionar depois.
           </p>
           <ListaHistorico eventos={historico} onChange={setHistorico} />
         </div>
       )}
 
       {passoAtual === "contato" && (
-        <div className="space-y-4 py-4">
-          <p className="text-sm text-neutral-600">
-            Pra onde mandamos o link de prévia do card assim que ele ficar pronto.
-          </p>
+        <div className="space-y-4">
+          <p className="text-sm text-ink-soft">Pra onde mandamos o link da prévia — na hora, sem espera.</p>
           <Campo
             label="WhatsApp do dono"
             required
@@ -433,15 +440,15 @@ export default function QuizPage() {
         </div>
       )}
 
-      {erro && <p className="text-sm text-red-600">{erro}</p>}
+      {erro && <p className="mt-4 text-sm text-red-600">{erro}</p>}
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-3 pt-5">
         {passoIndex > 0 && (
           <button
             type="button"
             onClick={voltar}
             disabled={enviando}
-            className="rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium"
+            className="rounded-full border border-line px-5 py-3 text-sm font-bold text-ink-soft"
           >
             Voltar
           </button>
@@ -450,7 +457,7 @@ export default function QuizPage() {
           <button
             type="button"
             onClick={avancar}
-            className="ml-auto rounded-full bg-neutral-900 px-5 py-2 text-sm font-medium text-white"
+            className="ml-auto rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-6 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)]"
           >
             Continuar
           </button>
@@ -459,7 +466,7 @@ export default function QuizPage() {
             type="button"
             onClick={enviar}
             disabled={enviando}
-            className="ml-auto rounded-full bg-emerald-700 px-5 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="ml-auto rounded-full bg-gradient-to-r from-brand-400 to-brand-600 px-6 py-3 text-sm font-extrabold text-white shadow-[0_14px_24px_-12px_rgba(232,112,58,0.55)] disabled:opacity-60"
           >
             {enviando ? "Criando..." : "Criar meu PetBio"}
           </button>

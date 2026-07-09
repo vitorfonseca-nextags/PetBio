@@ -12,10 +12,11 @@ import type {
 } from "@/lib/types/card";
 import { limiteFotos, mostraPersonalidadeEHistorico, saudeApenasEssencial } from "@/lib/plano";
 import { EXEMPLOS } from "@/lib/quiz/exemplos";
+import { Campo } from "@/components/quiz/Campo";
+import { Select } from "@/components/quiz/Select";
 import { ListaMedicacoes } from "@/components/quiz/ListaMedicacoes";
 import { ListaHistorico } from "@/components/quiz/ListaHistorico";
 import { BlocoExpansivel } from "@/components/card/BlocoExpansivel";
-import { CampoEditor, SelectEditor } from "./CampoEditor";
 import { EditorFotoPrincipal, EditorFotosExtras, type FotoEditavel } from "./EditorFotos";
 import { atualizarCard } from "@/app/conta/actions";
 
@@ -144,50 +145,50 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
       <div className="px-4">
         <BlocoExpansivel titulo="Identidade" icone="🐾" defaultAberto>
           <div className="space-y-4">
-            <CampoEditor
+            <Campo
               label="Nome do pet"
               required
               value={identidade.nome}
               onChange={(v) => setIdentidade((s) => ({ ...s, nome: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Apelido"
               value={identidade.apelido}
               onChange={(v) => setIdentidade((s) => ({ ...s, apelido: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Espécie"
               required
               value={identidade.especie}
               onChange={(v) => setIdentidade((s) => ({ ...s, especie: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Raça"
               value={identidade.raca}
               onChange={(v) => setIdentidade((s) => ({ ...s, raca: v }))}
             />
-            <SelectEditor
+            <Select
               label="Sexo"
               value={identidade.sexo}
               onChange={(v) => setIdentidade((s) => ({ ...s, sexo: v as IdentidadeForm["sexo"] }))}
               opcoes={[
-                { valor: "", texto: "Prefiro não dizer" },
+                { valor: "", texto: "Prefiro não informar" },
                 { valor: "macho", texto: "Macho" },
                 { valor: "femea", texto: "Fêmea" },
               ]}
             />
-            <CampoEditor
+            <Campo
               label="Data de nascimento"
               tipo="date"
               value={identidade.nascimento}
               onChange={(v) => setIdentidade((s) => ({ ...s, nascimento: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Idade aproximada"
               value={identidade.idade_aproximada}
               onChange={(v) => setIdentidade((s) => ({ ...s, idade_aproximada: v }))}
             />
-            <SelectEditor
+            <Select
               label="Porte"
               value={identidade.porte}
               onChange={(v) => setIdentidade((s) => ({ ...s, porte: v as IdentidadeForm["porte"] }))}
@@ -198,12 +199,12 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
                 { valor: "grande", texto: "Grande" },
               ]}
             />
-            <CampoEditor
+            <Campo
               label="Cores"
               value={identidade.cores}
               onChange={(v) => setIdentidade((s) => ({ ...s, cores: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Marcas distintivas"
               linhas={2}
               exemplo={EXEMPLOS.marcasDistintivas}
@@ -217,38 +218,38 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
 
         <BlocoExpansivel titulo="Alimentação" icone="🍖">
           <div className="space-y-4">
-            <CampoEditor
+            <Campo
               label="Ração (marca e tipo)"
               exemplo={EXEMPLOS.racaoMarcaTipo}
               value={alimentacao.racao_marca_tipo ?? ""}
               onChange={(v) => setAlimentacao((s) => ({ ...s, racao_marca_tipo: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Quantidade"
               exemplo={EXEMPLOS.quantidade}
               value={alimentacao.quantidade ?? ""}
               onChange={(v) => setAlimentacao((s) => ({ ...s, quantidade: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Horários"
               exemplo={EXEMPLOS.horarios}
               value={alimentacao.horarios ?? ""}
               onChange={(v) => setAlimentacao((s) => ({ ...s, horarios: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Petiscos permitidos"
               exemplo={EXEMPLOS.petiscos}
               value={alimentacao.petiscos ?? ""}
               onChange={(v) => setAlimentacao((s) => ({ ...s, petiscos: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Alimentos proibidos"
               linhas={2}
               exemplo={EXEMPLOS.proibidos}
               value={alimentacao.proibidos ?? ""}
               onChange={(v) => setAlimentacao((s) => ({ ...s, proibidos: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Onde fica a comida"
               exemplo={EXEMPLOS.ondeFicaComida}
               value={alimentacao.onde_fica ?? ""}
@@ -259,25 +260,25 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
 
         <BlocoExpansivel titulo="Saúde" icone="🩺">
           <div className="space-y-4">
-            <CampoEditor
+            <Campo
               label="Nome do veterinário"
               value={saude.vet_nome ?? ""}
               onChange={(v) => setSaude((s) => ({ ...s, vet_nome: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Telefone do veterinário"
               tipo="tel"
               value={saude.vet_telefone ?? ""}
               onChange={(v) => setSaude((s) => ({ ...s, vet_telefone: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Vacinas"
               linhas={2}
               exemplo={EXEMPLOS.vacinas}
               value={saude.vacinas ?? ""}
               onChange={(v) => setSaude((s) => ({ ...s, vacinas: v }))}
             />
-            <CampoEditor
+            <Campo
               label="Condições de saúde"
               linhas={2}
               exemplo={EXEMPLOS.condicoesSaude}
@@ -290,7 +291,7 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
               </p>
             ) : (
               <>
-                <CampoEditor
+                <Campo
                   label="Clínica de emergência"
                   value={saude.clinica_emergencia ?? ""}
                   onChange={(v) => setSaude((s) => ({ ...s, clinica_emergencia: v }))}
@@ -320,50 +321,50 @@ export function EditorCard({ card, plano }: { card: Card; plano: Plano | null })
           <>
             <BlocoExpansivel titulo="Personalidade e rotina" icone="🎾">
               <div className="space-y-4">
-                <CampoEditor
+                <Campo
                   label="Temperamento"
                   linhas={2}
                   exemplo={EXEMPLOS.temperamento}
                   value={personalidade.temperamento ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, temperamento: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Medos"
                   exemplo={EXEMPLOS.medos}
                   value={personalidade.medos ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, medos: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Manias"
                   exemplo={EXEMPLOS.manias}
                   value={personalidade.manias ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, manias: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Comandos que conhece"
                   exemplo={EXEMPLOS.comandos}
                   value={personalidade.comandos ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, comandos: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Rotina de passeio"
                   exemplo={EXEMPLOS.rotinaPasseio}
                   value={personalidade.rotina_passeio ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, rotina_passeio: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Rotina de sono"
                   exemplo={EXEMPLOS.rotinaSono}
                   value={personalidade.rotina_sono ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, rotina_sono: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Brinquedos favoritos"
                   exemplo={EXEMPLOS.brinquedos}
                   value={personalidade.brinquedos ?? ""}
                   onChange={(v) => setPersonalidade((s) => ({ ...s, brinquedos: v }))}
                 />
-                <CampoEditor
+                <Campo
                   label="Lugares favoritos"
                   exemplo={EXEMPLOS.lugaresFavoritos}
                   value={personalidade.lugares_favoritos ?? ""}
