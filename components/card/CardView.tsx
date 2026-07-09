@@ -16,7 +16,7 @@ export function CardView({ card }: { card: CardComPedido }) {
   const mostraCompleto = mostraPersonalidadeEHistorico(plano);
 
   return (
-    <main className="relative mx-auto min-h-screen max-w-md bg-cream pb-10">
+    <main className="relative mx-auto min-h-screen w-full max-w-md bg-cream pb-10">
       {card.is_watermarked && <MarcaDagua />}
 
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-cream/90 px-4 py-3 backdrop-blur">

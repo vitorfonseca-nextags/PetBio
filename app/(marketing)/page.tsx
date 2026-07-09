@@ -65,7 +65,7 @@ const FAQ = [
 
 export default function HomePage() {
   return (
-    <main className="mx-auto max-w-md bg-cream pb-16">
+    <main className="mx-auto w-full max-w-md bg-cream pb-16">
       <header className="flex items-center justify-between px-4 py-6">
         <span className="text-lg font-extrabold text-ink">
           pet<span className="text-brand-600">bio</span>
