@@ -37,8 +37,8 @@ Manter um `.env.example` espelhando estas chaves (sem os valores reais):
 
 ```
 # App
-NEXT_PUBLIC_APP_URL=            # ex.: https://petbio.com.br
-APP_BASE_DOMAIN=petbio.com.br
+NEXT_PUBLIC_APP_URL=            # ex.: https://petbio.cayen.com.br
+APP_BASE_DOMAIN=petbio.cayen.com.br
 
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=
@@ -219,7 +219,9 @@ Enquanto não pago, o card vive no **slug temporário** = `order_code`
   automático por commit funcionam sem configuração extra).
 - Preview URLs por branch facilitam validar em ambiente de teste antes de produção
   (atende à regra 4 do README).
-- Domínio próprio (`petbio.com.br`) se aponta facilmente.
+- Domínio próprio se aponta facilmente — decidido na Fase 9.2: subdomínio
+  `petbio.cayen.com.br` (mesmo domínio já usado pela Cayen Joias/Revivo em
+  `presente.cayen.com.br`), em vez de um domínio `petbio.com.br` dedicado.
 - Alternativa: Cloudflare (Pages/Workers) é viável, mas exige mais ajuste para o
   runtime do Next. Hostinger **não** serve (só estático/WordPress).
 
