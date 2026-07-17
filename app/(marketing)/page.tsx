@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroMotion } from "@/components/marketing/HeroMotion";
+import { SeloCayen } from "@/components/marca/SeloCayen";
 
 const PASSOS = [
   {
@@ -68,9 +69,12 @@ export default function HomePage() {
   return (
     <main className="w-full bg-cream">
       <header className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
-        <span className="text-lg font-extrabold text-ink">
-          pet<span className="text-brand-600">bio</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-extrabold text-ink">
+            pet<span className="text-brand-600">bio</span>
+          </span>
+          <SeloCayen />
+        </div>
         <Link href="/criar" className="text-sm font-bold text-brand-600">
           Criar agora
         </Link>
@@ -287,7 +291,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="py-8 text-center text-xs text-ink-soft">PetBio</footer>
+      <footer className="border-t border-line px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 text-center">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold text-ink">
+              pet<span className="text-brand-600">bio</span>
+            </span>
+            <SeloCayen />
+          </div>
+          <p className="text-[11px] leading-relaxed text-ink-soft">
+            Rua Josino Alvarenga Guimarães 564, 2pvt - Parque das Nações - Limeira
+            <br />
+            © 2026 CAYEN ACESSORIOS LTDA CNPJ: 62.945.185/0001-64
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }

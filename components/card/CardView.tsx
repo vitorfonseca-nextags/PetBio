@@ -10,6 +10,7 @@ import { BlocoHistorico } from "./BlocoHistorico";
 import { MarcaDagua } from "./MarcaDagua";
 import { BotaoCompartilhar } from "./BotaoCompartilhar";
 import { BotoesCompra } from "./BotoesCompra";
+import { SeloCayen } from "@/components/marca/SeloCayen";
 
 export function CardView({ card }: { card: CardComPedido }) {
   const plano = card.order.plan;
@@ -21,9 +22,12 @@ export function CardView({ card }: { card: CardComPedido }) {
 
       <div className="sticky top-0 z-10 border-b border-line bg-cream/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-8">
-          <span className="text-sm font-extrabold text-ink">
-            pet<span className="text-brand-600">bio</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold text-ink">
+              pet<span className="text-brand-600">bio</span>
+            </span>
+            <SeloCayen imgClassName="h-3.5" />
+          </div>
           <BotaoCompartilhar habilitado={!card.is_watermarked} />
         </div>
       </div>

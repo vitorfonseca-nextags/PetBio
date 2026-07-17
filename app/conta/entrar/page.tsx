@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { solicitarCodigo, verificarCodigo } from "../actions";
+import { SeloCayen } from "@/components/marca/SeloCayen";
 
 export default function EntrarPage() {
   const [etapa, setEtapa] = useState<"email" | "codigo">("email");
@@ -45,9 +46,12 @@ export default function EntrarPage() {
   return (
     <main className="grid min-h-screen w-full grid-cols-1 bg-cream lg:grid-cols-2">
       <div className="hidden flex-col justify-center bg-gradient-to-br from-brand-400 to-brand-600 p-16 text-white lg:flex">
-        <p className="text-3xl font-extrabold">
-          pet<span className="text-white/80">bio</span>
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-3xl font-extrabold">
+            pet<span className="text-white/80">bio</span>
+          </p>
+          <SeloCayen chip imgClassName="h-5" />
+        </div>
         <h1 className="mt-6 max-w-sm text-2xl font-extrabold text-balance xl:text-3xl">
           Todos os dados do seu pet, sempre à mão.
         </h1>
@@ -59,9 +63,12 @@ export default function EntrarPage() {
 
       <div className="flex flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-sm">
-          <p className="text-center text-xl font-extrabold text-ink lg:hidden">
-            pet<span className="text-brand-600">bio</span>
-          </p>
+          <div className="flex items-center justify-center gap-2 lg:hidden">
+            <p className="text-center text-xl font-extrabold text-ink">
+              pet<span className="text-brand-600">bio</span>
+            </p>
+            <SeloCayen />
+          </div>
           <h1 className="mt-6 text-center text-lg font-extrabold text-ink lg:mt-0 lg:text-left lg:text-2xl">
             Entrar na área do cliente
           </h1>
