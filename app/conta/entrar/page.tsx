@@ -50,7 +50,7 @@ export default function EntrarPage() {
           <p className="text-3xl font-extrabold">
             pet<span className="text-white/80">bio</span>
           </p>
-          <SeloCayen chip imgClassName="h-5" />
+          <SeloCayen chip imgClassName="h-9" />
         </div>
         <h1 className="mt-6 max-w-sm text-2xl font-extrabold text-balance xl:text-3xl">
           Todos os dados do seu pet, sempre à mão.

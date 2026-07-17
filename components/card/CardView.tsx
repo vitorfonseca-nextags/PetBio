@@ -26,7 +26,7 @@ export function CardView({ card }: { card: CardComPedido }) {
             <span className="text-sm font-extrabold text-ink">
               pet<span className="text-brand-600">bio</span>
             </span>
-            <SeloCayen imgClassName="h-3.5" />
+            <SeloCayen imgClassName="h-5" />
           </div>
           <BotaoCompartilhar habilitado={!card.is_watermarked} />
         </div>
