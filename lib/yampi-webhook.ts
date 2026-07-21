@@ -69,3 +69,17 @@ export function extrairEmailCliente(resource: unknown): string | null {
     ?.email;
   return typeof email === "string" && email.includes("@") ? email : null;
 }
+
+/**
+ * Lê o primeiro nome do cliente em `resource.customer.data.first_name`
+ * (formato confirmado chamando a API real de pedidos da Yampi — mesmo
+ * objeto `customer.data` usado em `extrairEmailCliente`). A Yampi grava em
+ * caixa alta ("GABRIEL"); normaliza pra exibição na mensagem de WhatsApp.
+ */
+export function extrairNomeCliente(resource: unknown): string | null {
+  const nome = (resource as { customer?: { data?: { first_name?: string } } } | undefined)?.customer
+    ?.data?.first_name;
+  if (typeof nome !== "string" || !nome.trim()) return null;
+  const limpo = nome.trim().toLowerCase();
+  return limpo.charAt(0).toUpperCase() + limpo.slice(1);
+}

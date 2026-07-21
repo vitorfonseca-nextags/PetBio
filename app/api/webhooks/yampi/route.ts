@@ -4,6 +4,7 @@ import {
   assinaturaYampiValida,
   extrairEmailCliente,
   extrairMetadata,
+  extrairNomeCliente,
   extrairPlano,
 } from "@/lib/yampi-webhook";
 import { gerarSlugPersonalizado } from "@/lib/slug";
@@ -81,9 +82,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "plano não identificado" }, { status: 500 });
   }
 
-  // e-mail do cliente vem do checkout da Yampi — usado no login por código
-  // da área do cliente (Fase 7). Ausência não bloqueia o pagamento.
+  // e-mail e nome do cliente vêm do checkout da Yampi — usados no login por
+  // código (Fase 7) e na mensagem de entrega. Ausência não bloqueia o pagamento.
   const email = extrairEmailCliente(payload.resource);
+  const nomeDono = extrairNomeCliente(payload.resource);
 
   await supabaseAdmin
     .from("orders")
@@ -103,9 +105,11 @@ export async function POST(request: Request) {
     after(() =>
       dispararEntregaWhatsapp({
         whatsapp: order.owner_whatsapp,
+        orderCode,
         slug,
         qrUrl,
         nomePet: identidade?.nome ?? "seu pet",
+        nomeDono: nomeDono ?? undefined,
       }),
     );
   }

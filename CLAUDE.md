@@ -49,9 +49,10 @@ SUPABASE_SERVICE_ROLE_KEY=      # uso só no servidor
 YAMPI_WEBHOOK_SECRET=           # segredo para validar a assinatura do webhook
 
 # NexTags AI (WhatsApp)
-NEXTAGS_API_KEY=                # painel NexTags > Configurações > API (header X-ACCESS-TOKEN)
-NEXTAGS_FLOW_PREVIA=            # ID do Flow com o modelo aprovado da prévia
-NEXTAGS_FLOW_ENTREGA=           # ID do Flow com o modelo aprovado da entrega
+NEXTAGS_API_KEY=                     # painel NexTags > Configurações > API (header X-ACCESS-TOKEN)
+NEXTAGS_FLOW_PREVIA=                 # ID do Flow com o modelo aprovado da prévia
+NEXTAGS_FLOW_ENTREGA_APROVADO=       # ID do Flow "pagamento aprovado" (disparado 1º)
+NEXTAGS_FLOW_ENTREGA_QR=             # ID do Flow que entrega link + QR (disparado 2º)
 
 # Login por código (e-mail), caso use provedor de e-mail
 EMAIL_PROVIDER_API_KEY=
@@ -98,11 +99,23 @@ EMAIL_PROVIDER_API_KEY=
   mensagem WhatsApp aprovado** (categoria Utilidade), montado como um **Flow** no
   painel visual da NexTags. Fluxo de envio: cria/acha o contato pelo telefone
   (`POST /contacts`) → seta os "custom fields" do contato com os dados dinâmicos
-  (`petbio_link`, `petbio_qr_url`, `petbio_pet_nome` — IDs fixos em
-  `lib/nextags.ts`) → dispara o Flow (`POST /contacts/{id}/send/{flow_id}`), que
-  usa o modelo aprovado referenciando esses campos.
-- O operador precisa criar 2 Flows no painel da NexTags (prévia e entrega) usando
-  os modelos aprovados, e colar os IDs em `NEXTAGS_FLOW_PREVIA`/`NEXTAGS_FLOW_ENTREGA`.
+  (campos próprios do PetBio, nomes claros — `nome_tutor`, `nome_pet`,
+  `link_card_pet`, `qr_code_pet`, `numero_pedido`; IDs fixos em `lib/nextags.ts`;
+  **não** reaproveitam os genéricos `name_a`/`access_url`/etc. do Revivo, mesmo os
+  Flows tendo sido clonados de lá — o operador precisa referenciar esses nomes nos
+  Flows do painel) → dispara o Flow (`POST /contacts/{id}/send/{flow_id}`), que usa
+  o modelo aprovado referenciando esses campos. `nome_tutor` só fica disponível a
+  partir do checkout da Yampi (na prévia, pré-compra, fica vazio).
+- **Entrega (Fase 7.1) dispara 2 Flows em sequência**, ambos clonados do Revivo e
+  ainda com a copy original (adaptação de texto e troca dos tokens `{{name_a}}` etc.
+  pros novos `{{nome_tutor}}` etc. é tarefa do operador no painel):
+  1. `NEXTAGS_FLOW_ENTREGA_APROVADO` — aviso rápido de pagamento confirmado.
+  2. `NEXTAGS_FLOW_ENTREGA_QR` — entrega o link + QR Code definitivos.
+  A decisão do operador foi **manter o slug automático** (não copiar o passo do
+  Revivo de "cliente escolhe a própria URL") — então a copy desses Flows precisa
+  parar de pedir pra "tocar e criar acesso" e ir direto pro resultado pronto.
+- O operador precisa criar o Flow de **prévia** (ainda não existe) e colar o ID em
+  `NEXTAGS_FLOW_PREVIA`.
 - O QR é gerado no nosso backend; ao NexTags enviamos a **URL da imagem do QR**
   (padrão que já funciona no fluxo do Revivo: manda-se a variável da imagem, não só
   o link).

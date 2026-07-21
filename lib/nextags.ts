@@ -11,12 +11,16 @@ import { urlPublica } from "./site-url";
  * os dados dinâmicos dos "custom fields" do contato, então o fluxo de envio
  * é: cria/acha o contato pelo telefone -> seta os campos -> dispara o Flow.
  *
- * IDs dos custom fields (criados uma única vez nesta conta NexTags, não são
- * segredo — só identificadores estáveis de configuração):
+ * Os Flows de entrega foram clonados dos flows do Revivo (mesma conta
+ * NexTags da Cayen), mas os campos usados aqui são próprios do PetBio
+ * (nomes claros, sem reaproveitar os genéricos `name_a`/`access_url`/etc. do
+ * Revivo) — o operador precisa referenciar estes nomes nos Flows do painel.
  */
-const CAMPO_LINK = 775974; // petbio_link
-const CAMPO_QR_URL = 881463; // petbio_qr_url
-const CAMPO_PET_NOME = 314588; // petbio_pet_nome
+const CAMPO_LINK_CARD = 299888; // link_card_pet — link do card
+const CAMPO_QR_CODE = 326711; // qr_code_pet — imagem do QR Code
+const CAMPO_NOME_TUTOR = 546589; // nome_tutor
+const CAMPO_NOME_PET = 292033; // nome_pet
+const CAMPO_NUMERO_PEDIDO = 390409; // numero_pedido
 
 const BASE_URL = "https://app.nextagsai.com.br/api";
 
@@ -94,8 +98,11 @@ export async function dispararPreviaWhatsapp(dados: {
   try {
     await comRetry(async () => {
       const contactId = await criarOuBuscarContato(dados.whatsapp, dados.nomePet);
-      await definirCampo(contactId, CAMPO_LINK, urlPublica(dados.orderCode));
-      await definirCampo(contactId, CAMPO_PET_NOME, dados.nomePet);
+      // dono ainda não é conhecido nesse ponto do funil (só coletado no
+      // checkout da Yampi) — nome_tutor fica de fora aqui, só nome_pet.
+      await definirCampo(contactId, CAMPO_NOME_PET, dados.nomePet);
+      await definirCampo(contactId, CAMPO_NUMERO_PEDIDO, dados.orderCode);
+      await definirCampo(contactId, CAMPO_LINK_CARD, urlPublica(dados.orderCode));
       await dispararFlow(contactId, flowId);
     });
   } catch (erro) {
@@ -105,28 +112,34 @@ export async function dispararPreviaWhatsapp(dados: {
 
 /**
  * Dispara a entrega por WhatsApp após o pagamento confirmado (Fase 7.1):
- * link personalizado + imagem do QR. Mesma regra de nunca travar o fluxo —
- * aqui é o webhook da Yampi, então uma falha de WhatsApp não pode derrubar
- * a resposta do pagamento processado.
+ * primeiro o Flow de "pagamento aprovado", depois o de link+QR — mesma
+ * regra de nunca travar o fluxo: aqui é o webhook da Yampi, uma falha de
+ * WhatsApp não pode derrubar a resposta do pagamento processado.
  */
 export async function dispararEntregaWhatsapp(dados: {
   whatsapp: string;
+  orderCode: string;
   slug: string;
   qrUrl: string;
   nomePet: string;
+  nomeDono?: string;
 }): Promise<void> {
-  const flowId = process.env.NEXTAGS_FLOW_ENTREGA;
-  if (!flowId) {
-    console.warn("NEXTAGS_FLOW_ENTREGA não configurado — entrega por WhatsApp não enviada.");
+  const flowAprovado = process.env.NEXTAGS_FLOW_ENTREGA_APROVADO;
+  const flowQr = process.env.NEXTAGS_FLOW_ENTREGA_QR;
+  if (!flowAprovado && !flowQr) {
+    console.warn("NEXTAGS_FLOW_ENTREGA_* não configurado — entrega por WhatsApp não enviada.");
     return;
   }
   try {
     await comRetry(async () => {
-      const contactId = await criarOuBuscarContato(dados.whatsapp, dados.nomePet);
-      await definirCampo(contactId, CAMPO_LINK, urlPublica(dados.slug));
-      await definirCampo(contactId, CAMPO_QR_URL, dados.qrUrl);
-      await definirCampo(contactId, CAMPO_PET_NOME, dados.nomePet);
-      await dispararFlow(contactId, flowId);
+      const contactId = await criarOuBuscarContato(dados.whatsapp, dados.nomeDono ?? dados.nomePet);
+      await definirCampo(contactId, CAMPO_NOME_TUTOR, dados.nomeDono ?? "");
+      await definirCampo(contactId, CAMPO_NOME_PET, dados.nomePet);
+      await definirCampo(contactId, CAMPO_NUMERO_PEDIDO, dados.orderCode);
+      await definirCampo(contactId, CAMPO_LINK_CARD, urlPublica(dados.slug));
+      await definirCampo(contactId, CAMPO_QR_CODE, dados.qrUrl);
+      if (flowAprovado) await dispararFlow(contactId, flowAprovado);
+      if (flowQr) await dispararFlow(contactId, flowQr);
     });
   } catch (erro) {
     console.error("Falha ao enviar entrega por WhatsApp:", erro);
