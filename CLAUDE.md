@@ -15,7 +15,7 @@
 | Banco de dados | **Supabase** (Postgres + Storage) | Pedidos, cards, fotos, sessões de login por código |
 | Versionamento | **GitHub** | Histórico e possibilidade de reverter |
 | Checkout | **Yampi** (externo) | Pagamento. NÃO geramos checkout; integramos via webhook |
-| WhatsApp/Automação | **Nextags / n8n** | Dispara prévia e entrega (link + QR) via webhook |
+| WhatsApp/Automação | **NexTags AI** | Dispara prévia e entrega (link + QR) via API + Flow |
 | Geração de QR | Biblioteca de QR no servidor (ex.: `qrcode`) | Gera o QR do link personalizado após a compra |
 | Hospedagem | **Vercel** | Deploy do Next.js (justificativa na seção 8) |
 
@@ -48,9 +48,10 @@ SUPABASE_SERVICE_ROLE_KEY=      # uso só no servidor
 # Yampi (webhook)
 YAMPI_WEBHOOK_SECRET=           # segredo para validar a assinatura do webhook
 
-# Nextags / n8n (WhatsApp)
-NEXTAGS_WEBHOOK_URL=            # endpoint que dispara mensagem no WhatsApp
-NEXTAGS_API_TOKEN=              # token de autorização, se aplicável
+# NexTags AI (WhatsApp)
+NEXTAGS_API_KEY=                # painel NexTags > Configurações > API (header X-ACCESS-TOKEN)
+NEXTAGS_FLOW_PREVIA=            # ID do Flow com o modelo aprovado da prévia
+NEXTAGS_FLOW_ENTREGA=           # ID do Flow com o modelo aprovado da entrega
 
 # Login por código (e-mail), caso use provedor de e-mail
 EMAIL_PROVIDER_API_KEY=
@@ -83,16 +84,26 @@ EMAIL_PROVIDER_API_KEY=
   API para o formato do payload. O Claude Code deve dizer exatamente **onde clicar
   para pegar o segredo do webhook e cadastrar a URL** `.../api/webhooks/yampi`.
 
-### 3.3 Nextags / n8n (WhatsApp)
+### 3.3 NexTags AI (WhatsApp)
 - Dois disparos no fluxo:
   1. **Prévia:** logo após o quiz, manda no WhatsApp o link temporário
      (`/{codigo-do-pedido}`) com a mensagem de que é preciso comprar para liberar
      link compartilhável + QR + edição.
   2. **Entrega:** após o webhook da Yampi confirmar o pagamento, manda o link
      personalizado (`/{nome-do-pet}`) **e a imagem do QR Code**.
-- Preferir **integração direta por endpoint/API** quando possível; n8n pode servir
-  de intermediário visual se necessário.
-- O QR é gerado no nosso backend; ao Nextags enviamos a **URL da imagem do QR**
+- **Mecanismo real da API** (descoberto na Fase 5/7.1, `lib/nextags.ts`): a API é
+  orientada a contato. Endpoints livres de texto/arquivo (`send/text`, `send/file`)
+  só entregam pra quem já mandou mensagem pro número nas últimas 24h — como o dono
+  do pet nunca falou com a gente antes, esses disparos exigem um **modelo de
+  mensagem WhatsApp aprovado** (categoria Utilidade), montado como um **Flow** no
+  painel visual da NexTags. Fluxo de envio: cria/acha o contato pelo telefone
+  (`POST /contacts`) → seta os "custom fields" do contato com os dados dinâmicos
+  (`petbio_link`, `petbio_qr_url`, `petbio_pet_nome` — IDs fixos em
+  `lib/nextags.ts`) → dispara o Flow (`POST /contacts/{id}/send/{flow_id}`), que
+  usa o modelo aprovado referenciando esses campos.
+- O operador precisa criar 2 Flows no painel da NexTags (prévia e entrega) usando
+  os modelos aprovados, e colar os IDs em `NEXTAGS_FLOW_PREVIA`/`NEXTAGS_FLOW_ENTREGA`.
+- O QR é gerado no nosso backend; ao NexTags enviamos a **URL da imagem do QR**
   (padrão que já funciona no fluxo do Revivo: manda-se a variável da imagem, não só
   o link).
 
@@ -182,9 +193,7 @@ Enquanto não pago, o card vive no **slug temporário** = `order_code`
     /[slug]/page.tsx             # card público (prévia com marca d'água OU final)
     /conta/...                   # área do cliente (login por código + edição)
     /api/webhooks/yampi/route.ts # recebe pedido pago
-    /api/whatsapp/route.ts       # dispara mensagens via Nextags/n8n
-    /api/qr/route.ts             # gera/serve o QR
-  /lib                           # supabase client, slug, validações, integrações
+  /lib                           # supabase client, slug, qr, nextags, validações
   /components                    # blocos do card, componentes do quiz
   /docs                          # PLANO.md, PROMPTS.md
   ```

@@ -1,10 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { gerarOrderCode } from "@/lib/order-code";
 import { limiteFotos } from "@/lib/plano";
 import { uploadFoto } from "@/lib/storage";
+import { dispararPreviaWhatsapp } from "@/lib/nextags";
 
 /**
  * Cria o pedido (draft, plan=null) + card (watermarked) a partir das
@@ -98,6 +100,14 @@ export async function criarPedido(formData: FormData) {
     await supabaseAdmin.from("orders").delete().eq("id", orderId);
     throw err;
   }
+
+  after(() =>
+    dispararPreviaWhatsapp({
+      whatsapp: whatsapp.trim(),
+      orderCode,
+      nomePet: String(dados.identidade.nome),
+    }),
+  );
 
   redirect(`/${orderCode}`);
 }

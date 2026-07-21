@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import {
   assinaturaYampiValida,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/yampi-webhook";
 import { gerarSlugPersonalizado } from "@/lib/slug";
 import { gerarQrCode } from "@/lib/qr";
+import { dispararEntregaWhatsapp } from "@/lib/nextags";
 
 /**
  * Webhook de pedido pago da Yampi. A mesma loja (Cayen Joias) processa
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
 
   const { data: order } = await supabaseAdmin
     .from("orders")
-    .select("id")
+    .select("id, owner_whatsapp")
     .eq("order_code", orderCode)
     .maybeSingle();
 
@@ -96,6 +97,18 @@ export async function POST(request: Request) {
     .from("cards")
     .update({ slug, is_watermarked: false, qr_url: qrUrl })
     .eq("id", card.id);
+
+  if (order.owner_whatsapp) {
+    const identidade = card.identidade as { nome?: string };
+    after(() =>
+      dispararEntregaWhatsapp({
+        whatsapp: order.owner_whatsapp,
+        slug,
+        qrUrl,
+        nomePet: identidade?.nome ?? "seu pet",
+      }),
+    );
+  }
 
   return NextResponse.json({ ok: true, slug });
 }
